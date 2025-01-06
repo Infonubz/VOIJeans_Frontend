@@ -1,0 +1,100 @@
+/* Custom scrollbar styles */
+.custom-table-invoice ::-webkit-scrollbar-thumb {
+  background: #3348ff; /* Color of the scrollbar handle */
+}
+
+.custom-table-invoice ::-webkit-scrollbar {
+  width: 0.4vw; /* Set the width of the scrollbar */
+}
+
+/* Handle on hover */
+.custom-table-invoice ::-webkit-scrollbar-thumb:hover {
+  background: #3348ff; /* Color of the scrollbar handle when hovered */
+}
+
+/* Table header styles */
+.custom-table-invoice .ant-table-thead > tr > th {
+  background-color: #3348ff; /* Header background color */
+  color: white; /* Header text color */
+  transition: none; /* Disable transitions to prevent height changes */
+}
+
+/* Table wrapper styles */
+.custom-table-invoice {
+  border-radius: 1vw; /* Rounded corners */
+  overflow: hidden; /* Ensure rounded corners are visible */
+  border: 0.1vw solid #3348ff; /* Border around the table */
+}
+
+/* Header cell padding */
+.custom-table-invoice .ant-table-thead .ant-table-cell {
+  padding: 0.4vw !important; /* Adjust header cell padding */
+  background-color: #3348ff; /* Optional: header background color */
+  color: white; /* Optional: header text color */
+}
+
+/* Body cell padding */
+.custom-table-invoice .ant-table-tbody .ant-table-cell {
+  padding: 0.1vw !important; /* Remove default padding for body cells */
+  border-right: 1px solid #b1b9ff; /* Add right border to body cells */
+}
+
+/* Remove border for the last cell in body rows */
+.custom-table-invoice .ant-table-tbody .ant-table-cell:last-child {
+  border-right: none;
+}
+
+
+.custom-table-invoice .ant-table-cell:last-child {
+  border-right: none; /* Remove border for the last cell */
+}
+
+/* Uncomment and adjust for row borders if necessary */
+/* General styles for table body cells */
+.custom-table-invoice .ant-table-tbody > tr > th,
+.custom-table-invoice .ant-table-tbody > tr > td {
+  border-bottom: 1px solid #b1b9ff; /* Row bottom border */
+  padding: 0; /* Adjust padding as needed */
+}
+
+/* Remove the bottom border for the cells in the last row */
+/* .custom-table-invoice .ant-table-tbody > tr:last-child > th,
+.custom-table-invoice .ant-table-tbody > tr:last-child > td {
+  border-bottom: none; /* Remove border for the last row */
+/* } */ 
+
+/* Optional: Ensure that header and other parts of the table remain scoped */
+.custom-table-invoice .ant-table {
+  /* Additional custom styles for the table can be added here */
+}
+.custom-table .ant-table-cell {
+  padding: 1.2vh !important; /* Remove default padding */
+}
+
+.custom-radio .ant-radio-inner {
+  border-color: #3348ff; /* Set the border color */
+}
+
+.custom-radio .ant-radio-checked .ant-radio-inner {
+  border-color: #3348ff;
+}
+
+/* .custom-radio .ant-radio-checked .ant-radio-inner:after {
+  background-color: #2196f3; 
+} */
+/* styles.css (or Pagination.module.css if using CSS Modules) */
+
+.pagination .page-item .page-link {
+  color: #1f4b7f;
+  border: 0.1vw solid #1f4b7f;
+  background-color: white;
+  height: 1vw;
+  width: 2vw;
+  border-radius: 0.2vw;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: #1f4b7f;
+  /* border-color: #00bfff; */
+  color: white;
+}
