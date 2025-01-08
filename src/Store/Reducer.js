@@ -1,9 +1,16 @@
 import {
+  ACCOUNT_GET_BY_ID,
+  ACCOUNT_LIST,
   DEBIT_NOTE_BY_ID,
+  INNO_ACCOUNT_LIST,
   INNOFASHION_COUNT,
   INNOFASHION_DATE,
   INNOFASHION_INVOICE_LIST,
+  INNOFASHION_OUTLET_LIST,
+  NOTIFICATION_LIST,
+  OUTLET_TRANSACTION_BY_ID,
   TRANSACTION_BY_ID,
+  VOI_ACCOUNT_LIST,
   VOI_JEANS_INVOICE_BY_ID,
   VOI_JEANS_INVOICE_HSN_CODE,
   VOI_JEANS_INVOICE_LIST,
@@ -23,7 +30,13 @@ const initialState = {
   inno_count: [],
   voi_count: [],
   inno_date: [],
-  voi_ageing_count:[]
+  voi_ageing_count: [],
+  outlet_list: [],
+  outlet_trans: [],
+  notification_list: [],
+  voi_account_list: [],
+  inno_account_list: [],
+  account_byid: [],
 };
 export const akrreducer = (state = initialState, action) => {
   const { type, payload, payload_count } = action;
@@ -93,6 +106,38 @@ export const akrreducer = (state = initialState, action) => {
       return {
         ...state,
         voi_ageing_count: payload,
+      };
+    case INNOFASHION_OUTLET_LIST:
+      console.log(payload, "888888");
+      return {
+        ...state,
+        outlet_list: payload,
+      };
+    case OUTLET_TRANSACTION_BY_ID:
+      return {
+        ...state,
+        outlet_trans: payload,
+      };
+    case NOTIFICATION_LIST:
+      return {
+        ...state,
+        notification_list: payload,
+      };
+
+    case VOI_ACCOUNT_LIST:
+      return {
+        ...state,
+        voi_account_list: payload,
+      };
+    case INNO_ACCOUNT_LIST:
+      return {
+        ...state,
+        inno_account_list: payload,
+      };
+    case ACCOUNT_GET_BY_ID:
+      return {
+        ...state,
+        account_byid: payload,
       };
     default:
       return state;

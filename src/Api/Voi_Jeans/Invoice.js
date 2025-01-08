@@ -1,6 +1,11 @@
 import axios from "axios";
 import { toast } from "react-toastify";
 import {
+  ACCOUNT_GET_BY_ID,
+  ACCOUNT_LIST,
+  INNO_ACCOUNT_LIST,
+  NOTIFICATION_LIST,
+  VOI_ACCOUNT_LIST,
   VOI_JEANS_INVOICE_BY_ID,
   VOI_JEANS_INVOICE_HSN_CODE,
   VOI_JEANS_INVOICE_LIST,
@@ -32,6 +37,8 @@ export const Get_Voijeans_Count = async (dispatch) => {
   }
 };
 export const Get_Voijeans_Ageing_Count = async (dispatch) => {
+  console.log("dxfcghjhgbfc");
+
   try {
     const response = await axios.get(`${apiUrl}/count-credit-periods`);
     dispatch({ type: VOIJEANS__AGEING_COUNT, payload: response.data });
@@ -56,6 +63,8 @@ export const Get_Voijeans_Status_By_Id = async (dispatch, status, module) => {
       ? 4
       : status === 8
       ? 8
+      : status === 9
+      ? 9
       : 1;
   const status_id_2 =
     status === 1
@@ -188,7 +197,7 @@ export const VoiJeansRequest = async (
     in_advance_request_id: 4,
     in_advance_request: "Make Payment",
     advance_percentage: SelectedPercentage,
-    balance_amount: Math.round(Get_Voijeans_list.total_amount) - reqamt,
+    balance_amount: Math.round(Get_Voijeans_list.net_amount) - reqamt,
     credit_period: creditValue,
   };
 
@@ -224,7 +233,195 @@ export const VoiJeansRequest = async (
     return null;
   }
 };
+export const Get_Notification_List = async (dispatch) => {
+  const user_id = sessionStorage.getItem("USER_ID");
 
+  try {
+    const response = await axios.get(
+      `${apiUrl}/${user_id === "INNO001" ? "innofashion" : "voi-jeans"}`
+    );
+    dispatch({ type: NOTIFICATION_LIST, payload: response.data });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    // return null;
+  }
+};
+export const NotificationUpdate = async (dispatch, value, id) => {
+  const user_id = sessionStorage.getItem("USER_ID");
+  const payloaddata = {
+    is_read: value,
+  };
+
+  const url = `${apiUrl}/${
+    user_id === "INNO001" ? "innofashion" : "voi-jeans"
+  }/${id}`;
+  const method = "put";
+  const payload = payloaddata;
+
+  try {
+    const response = await axios({
+      method,
+      url,
+      data: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(response.data, "ghjk");
+
+    if (response?.data?.error) {
+      toast.warning(response.data.error);
+    } else {
+      Get_Notification_List(dispatch);
+      return response.data;
+    }
+  } catch (error) {
+    console.log(error, "fghj");
+
+    if (error.response.data.error) {
+      toast.warning(error.response.data.error);
+    } else {
+      console.log(
+        error?.response?.data?.message,
+        "An error occurred. Please try again."
+      );
+      toast.error(error?.response?.data?.message);
+    }
+    return null;
+  }
+};
+export const Get_Voi_Account_List = async (dispatch) => {
+  try {
+    const response = await axios.get(`${apiUrl}/voi-jeans-bank-details`);
+    dispatch({ type: VOI_ACCOUNT_LIST, payload: response.data });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    // return null;
+  }
+};
+export const Get_Inno_Account_List = async (dispatch) => {
+  try {
+    const response = await axios.get(`${apiUrl}/innofashion-bank-details`);
+    dispatch({ type: INNO_ACCOUNT_LIST, payload: response.data });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    // return null;
+  }
+};
+export const Get_Voi_Account_By_ID = async (dispatch, id) => {
+  try {
+    const response = await axios.get(`${apiUrl}/voi-jeans-bank-details/${id}`);
+    dispatch({ type: ACCOUNT_GET_BY_ID, payload: response.data });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    // return null;
+  }
+};
+
+export const Delete_account = async (dispatch, id) => {
+  const user_id = sessionStorage.getItem("USER_ID");
+  try {
+    const response = await axios.delete(
+      `${apiUrl}/${
+        user_id === "INNO001"
+          ? "innofashion-bank-details"
+          : "voi-jeans-bank-details"
+      }/${id}`
+    );
+    toast.success(response?.data);
+    if (user_id === "INNO001") {
+      Get_Inno_Account_List(dispatch);
+    } else {
+      Get_Voi_Account_List(dispatch);
+    }
+    // dispatch({ type: ACCOUNT_GET_BY_ID, payload: response.data });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    // return null;
+  }
+};
+export const Get_Inno_Account_By_ID = async (dispatch, id) => {
+  try {
+    const response = await axios.get(
+      `${apiUrl}/innofashion-bank-details/${id}`
+    );
+    dispatch({ type: ACCOUNT_GET_BY_ID, payload: response.data });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    // return null;
+  }
+};
+export const AccountSubmit = async (value, dispatch, setCurrentTab, id) => {
+  console.log(value, "valuevaluevaluevalue");
+
+  const accpayload = {
+    acc_holder_name: value?.acc_holder_name,
+    acc_no: value?.acc_no,
+    bank_name: value?.bank_name,
+    ifsc_code: value?.ifsc_code,
+    branch_name: value?.branch_name,
+    acc_type: value.acc_type,
+  };
+  const user_id = sessionStorage.getItem("USER_ID");
+  console.log(id, "idididwsssssssid");
+
+  const url = id
+    ? `${apiUrl}/${
+        user_id === "INNO001"
+          ? "innofashion-bank-details"
+          : "voi-jeans-bank-details"
+      }/${id}`
+    : `${apiUrl}/${
+        user_id === "INNO001"
+          ? "innofashion-bank-details"
+          : "voi-jeans-bank-details"
+      }`;
+  const method = id ? "put" : "post";
+  const payload = accpayload;
+
+  try {
+    const response = await axios({
+      method,
+      url,
+      data: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(response, "responseresponse");
+    setCurrentTab(1);
+    toast.success(response?.data);
+    const user_id = sessionStorage.getItem("USER_ID");
+    dispatch({
+      type: ACCOUNT_GET_BY_ID,
+      payload: [],
+    });
+    if (user_id === "INNO001") {
+      Get_Inno_Account_List(dispatch);
+    } else {
+      Get_Voi_Account_List(dispatch);
+    }
+  } catch (error) {
+    console.log(error, "fghjsssssssss");
+
+    if (error?.response?.data?.error) {
+      toast.warning(error?.response?.data?.error);
+    } else {
+      console.log(
+        error?.response?.data?.message,
+        "An error occurred. Please try again."
+      );
+      toast.error(error?.response?.data?.message);
+    }
+    return null;
+  }
+};
 const handleError = (error) => {
   console.error("Error details:", error);
   let errorMessage = "An error occurred";

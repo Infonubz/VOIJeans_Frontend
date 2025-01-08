@@ -19,6 +19,8 @@ import { width } from "@fortawesome/free-solid-svg-icons/fa0";
 import RequestStatus from "../../Voi_Invoice/RequestStatus";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  Get_Inno_Account_List,
+  Get_Voi_Account_List,
   Get_Voijeans_Invoice_By_Id,
   Get_Voijeans_Invoice_HSN_Code,
   Get_Voijeans_Invoice_List,
@@ -193,7 +195,7 @@ export default function Inno_Adv_Request() {
       render: (row) => (
         <>
           <label className="text-[0.9vw]">
-            {(`${row.advance_percentage} %`)}
+            {`${row.advance_percentage} %`}
           </label>
         </>
       ),
@@ -284,6 +286,8 @@ export default function Inno_Adv_Request() {
                 }
                 setInvoiceNo(row.voi_invoice_no);
                 setCurrentData(row);
+                Get_Inno_Account_List(dispatch);
+                Get_Voi_Account_List(dispatch);
                 // Get_Voijeans_Invoice_By_Id(dispatch, row.invoice_no);
               }}
             >
@@ -641,15 +645,23 @@ export default function Inno_Adv_Request() {
         </div>
         <ConfigProvider
           theme={{
+            // components: {
+            //   Table: {
+            //     // Customize hover styles
+            //     rowHoverBg: "rgb(255, 255, 255, 0)",
+            //     rowSelectedBg: "rgb(255, 255, 255, 0)",
+            //     rowSelectedHoverBg: "rgb(255, 255, 255, 0)",
+            //     borderRadius: "2vw", // Row border-radius
+            //     shadowHover: "0 4px 6px rgba(0, 0, 0, 0.15)", // Shadow for hover
+            //     //shadowSelected: '0 4px 8px rgba(0, 0, 0, 0.2)', // Shadow for selected
+            //   },
+            // },
             components: {
               Table: {
-                // Customize hover styles
                 rowHoverBg: "rgb(255, 255, 255, 0)",
                 rowSelectedBg: "rgb(255, 255, 255, 0)",
-                rowSelectedHoverBg: "rgb(255, 255, 255, 0)",
-                borderRadius: "2vw", // Row border-radius
-                shadowHover: "0 4px 6px rgba(0, 0, 0, 0.15)", // Shadow for hover
-                //shadowSelected: '0 4px 8px rgba(0, 0, 0, 0.2)', // Shadow for selected
+                borderRadius: "2vw",
+                shadowHover: "0 4px 6px rgba(0, 0, 0, 0.15)",
               },
             },
           }}

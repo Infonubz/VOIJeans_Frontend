@@ -276,7 +276,7 @@ export default function RequestedFun() {
       },
     },
     {
-      title: <span className="text-[0.9vw]">Payment Due</span>,
+      title: <span className="text-[0.9vw]">Payment status</span>,
       key: "payment_status_id",
       align: "center",
       render: (row) => {
@@ -607,13 +607,10 @@ export default function RequestedFun() {
           theme={{
             components: {
               Table: {
-                // Customize hover styles
                 rowHoverBg: "rgb(255, 255, 255, 0)",
                 rowSelectedBg: "rgb(255, 255, 255, 0)",
-                rowSelectedHoverBg: "rgb(255, 255, 255, 0)",
-                borderRadius: "2vw", // Row border-radius
-                shadowHover: "0 4px 6px rgba(0, 0, 0, 0.15)", // Shadow for hover
-                //shadowSelected: '0 4px 8px rgba(0, 0, 0, 0.2)', // Shadow for selected
+                borderRadius: "2vw",
+                shadowHover: "0 4px 6px rgba(0, 0, 0, 0.15)",
               },
             },
           }}

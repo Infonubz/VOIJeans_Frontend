@@ -10,12 +10,13 @@ export default function PaymentRequestApprove({
   page,
   currentTab,
   fullamt,
-  currentdata
+  currentdata,
 }) {
   const dispatch = useDispatch();
   const [command, setCommand] = useState("");
   const [error, setError] = useState(false);
   const [transshow, setTransShow] = useState(false);
+  const [commandShow, setCommandShow] = useState(false);
   const handlesubmit = (value) => {
     // if(value==1){
 
@@ -25,6 +26,8 @@ export default function PaymentRequestApprove({
     console.log(command, ":command987452");
     if (value == 1) {
       setTransShow(true);
+    } else if ((value === 2 || value === 3) && command === "") {
+      setCommandShow(true);
     } else {
       setError(false); // Hide the error
       InnofashionRequest(
@@ -54,25 +57,31 @@ export default function PaymentRequestApprove({
         <div className="flex items-center justify-center pt-[2vw]">
           <img src={statusimg} className="w-[7vw] h-[7vw]" />
         </div>
-        <div className="px-[2vw] pb-[2.5vw] pt-[1vw] relative">
-          <label className="text-[1.2vw] font-semibold mb-[1vw]">Command</label>
-          <input
-            type="text"
-            placeholder="Enter Command"
-            className="px-[1vw] w-full h-[2.5vw] outline-none border-[0.1vw] rounded-[0.5vw] border-gray-400"
-            onChange={(e) => {
-              setCommand(e.target.value);
-              setError(e.target.value.trim() !== "");
-            }}
-          />
-          {error === false && (
-            <span className="text-[0.8vw] text-[#3348FF] absolute bottom-[1.2vw] left-[2vw]">
-              {" "}
-              Comments is required for Hold and Rejected
-            </span>
-          )}
-        </div>
-        <div className="flex items-center justify-center pb-[2vw] px-[2vw] gap-x-[2vw]">
+        {commandShow && (
+          <>
+            <div className="px-[2vw] pb-[2.5vw] pt-[1vw] relative">
+              <label className="text-[1.2vw] font-semibold mb-[1vw]">
+                Command
+              </label>
+              <input
+                type="text"
+                placeholder="Enter Command"
+                className="px-[1vw] w-full h-[2.5vw] outline-none border-[0.1vw] rounded-[0.5vw] border-gray-400"
+                onChange={(e) => {
+                  setCommand(e.target.value);
+                  setError(e.target.value.trim() !== "");
+                }}
+              />
+              {error === false && (
+                <span className="text-[0.8vw] text-[#3348FF] absolute bottom-[1.2vw] left-[2vw]">
+                  {" "}
+                  Comments is required for Hold and Rejected
+                </span>
+              )}
+            </div>
+          </>
+        )}
+        <div className="flex items-center justify-center mt-[1vw] pb-[2vw] px-[2vw] gap-x-[2vw]">
           <button
             onClick={() => handlesubmit(1)}
             className="text-[#086700] bg-[#D6FFD3] py-[0.25vw] shadow-gray-400 shadow-md px-[1.5vw] text-[1vw] font-bold rounded-full cursor-pointer"

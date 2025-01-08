@@ -251,8 +251,8 @@ export default function InvoiceTemplate() {
                   </label>
                   <label className="text-[1vw] font-bold">Innofashion</label>
                   <label className="text-[0.9vw]">
-                    305, 3rd Floor Orion mall, Bengaluru, Karnataka, India -
-                    560055
+                    SAK Nagar, TN SF NO-61/2PART, Thottipalayam village Zone,
+                    Tirupur-641603.
                   </label>
                   <div className="flex  gap-x-[0.5vw]">
                     <label className="text-[#737982] text-[0.9vw]">

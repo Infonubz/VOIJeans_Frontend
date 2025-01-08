@@ -8,7 +8,7 @@ import "../../../App.css";
 import { Get_Voijeans_Status_By_Id } from "../../../Api/Voi_Jeans/Invoice";
 import InvoiceProductList from "../InvoiceProductList";
 import { Get_Debit_Note_By_Id } from "../../../Api/Innofashion/Invoice";
-import logo from "../../../Assets/innlogo.png"
+import logo from "../../../Assets/innlogo.png";
 export default function Debit_Note_Template({ currentinvoice }) {
   const Get_Voijeans_list = useSelector((state) => state.akr.voi_jeans_by_id);
   const Get_Voijeans_hsncode = useSelector(
@@ -39,7 +39,7 @@ export default function Debit_Note_Template({ currentinvoice }) {
     },
     {
       title: <span className="text-[0.9vw]">Invoice Date</span>,
-      key: "adv_paid_date",
+      key: "invoice_date",
       align: "center",
       // width: "5vw",
       render: (row, index, i) => {
@@ -47,7 +47,7 @@ export default function Debit_Note_Template({ currentinvoice }) {
         return (
           <>
             <label className="text-[0.8vw]">
-              {dayjs(row.adv_paid_date).format("DD MMM, YYYY")}
+              {dayjs(row.invoice_date).format("DD MMM, YYYY")}
             </label>
           </>
         );
@@ -55,14 +55,14 @@ export default function Debit_Note_Template({ currentinvoice }) {
     },
     {
       title: <span className="text-[0.9vw]">Invoice No</span>,
-      key: "invoice_no",
+      key: "voi_invoice_no",
       align: "center",
       // width: "5vw",
       render: (row, index, i) => {
         console.log("testingss", row.id);
         return (
           <>
-            <label className="text-[0.8vw]">{` ${row.invoice_no}`}</label>
+            <label className="text-[0.8vw]">{` ${row.voi_invoice_no}`}</label>
           </>
         );
       },
@@ -110,7 +110,7 @@ export default function Debit_Note_Template({ currentinvoice }) {
       },
     },
     {
-      title: <span className="text-[0.9vw]">Interest Days</span>,
+      title: <span className="text-[0.9vw]">No of Days</span>,
       key: "interest_total_days",
       align: "center",
       // width: "5vw",
@@ -124,7 +124,7 @@ export default function Debit_Note_Template({ currentinvoice }) {
       },
     },
     {
-      title: <span className="text-[0.9vw]">Interest Amount / Day</span>,
+      title: <span className="text-[0.9vw]"> Amount / Day</span>,
       key: "interest_per_day_amt",
       align: "center",
       // width: "5vw",
@@ -160,12 +160,16 @@ export default function Debit_Note_Template({ currentinvoice }) {
     const formattedAmount = new Intl.NumberFormat("en-IN").format(amt);
     return formattedAmount;
   };
+  console.log(Get_Voijeans_list,"98632652");
+  console.log(Get_Debit_Note,"Get_Debit_Note");
+  
   return (
     <>
-      <div className="h-full w-full   scrollbar-hide  overflow-y-scroll">
-        <div className="p-[2vw]">
-          <div className="grid grid-cols-5">
-            {/* <div>
+      <div className="h-full w-full">
+        <div className="h-full w-full p-[2vw]  scrollbar-hide  overflow-y-scroll">
+          <div className="">
+            <div className="grid grid-cols-5">
+              {/* <div>
               <label className="text-[1.5vw] font-semibold">Invoice</label>
               <div className="flex mt-[0.5vw] gap-x-[2vw]">
                 <label className="text-[#737982] text-[1vw]">Invoice No:</label>
@@ -182,33 +186,39 @@ export default function Debit_Note_Template({ currentinvoice }) {
                 </label>
               </div>
             </div> */}
-            <div className="col-span-3 flex border-dashed border-[0.15vw] rounded-[0.5vw] border-[#E8EAED] gap-x-[0.5vw]">
-              <div className="flex items-center border-dashed border-r-[0.15vw] border-[#E8EAED]">
-                <img src={logo} className="w-[10vw] p-[0.5vw]" />
-              </div>
-              <div className="gap-y-[0.5vw] h-full mt-[0.3vw]">
-                <label className="text-[0.9vw] font-semibold">
-                  Innofashion
-                </label>
-                <div className="flex items-center flex-col">
-                  {/* <label>Warehouse:</label> */}
-                  <label className="text-[0.9vw]">
-                    Venu Mall, First FloorUnit-F10, Nizamabad,
+              <div className="col-span-3 flex border-dashed border-[0.15vw] rounded-[0.5vw] border-[#E8EAED] gap-x-[0.5vw]">
+                <div className="flex items-center border-dashed border-r-[0.15vw] border-[#E8EAED]">
+                  <img src={logo} className="w-[10vw] p-[0.5vw]" />
+                </div>
+                <div className="gap-y-[0.5vw] h-full mt-[0.3vw]">
+                  <label className="text-[0.9vw] font-semibold">
+                    Innofashion
                   </label>
-                </div>
-                <div className="flex items-center gap-x-[0.5vw]">
-                  <label className="text-[#737982] text-[0.9vw]">GSTIN:</label>
-                  <label className="text-[0.9vw]">29AADCV7223L1ZW</label>
-                </div>
-                <div className="flex items-center gap-x-[0.8vw]">
-                  <label className="text-[#737982] text-[0.9vw]">Email:</label>
-                  <label className="text-[0.9vw]">VOI.DB@VOIJEANS.IN</label>
-                </div>
-                <div className="flex items-center gap-x-[0.5vw]">
-                  <label className="text-[#737982] text-[0.9vw]">Phone:</label>
-                  <label className="text-[0.9vw]">9121760868</label>
-                </div>
-                {/* <div className="flex items-center">
+                  <div className="flex items-center flex-col">
+                    {/* <label>Warehouse:</label> */}
+                    <label className="text-[0.9vw]">
+                      Venu Mall, First FloorUnit-F10, Nizamabad,
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-x-[0.5vw]">
+                    <label className="text-[#737982] text-[0.9vw]">
+                      GSTIN:
+                    </label>
+                    <label className="text-[0.9vw]">29AADCV7223L1ZW</label>
+                  </div>
+                  <div className="flex items-center gap-x-[0.8vw]">
+                    <label className="text-[#737982] text-[0.9vw]">
+                      Email:
+                    </label>
+                    <label className="text-[0.9vw]">VOI.DB@VOIJEANS.IN</label>
+                  </div>
+                  <div className="flex items-center gap-x-[0.5vw]">
+                    <label className="text-[#737982] text-[0.9vw]">
+                      Phone:
+                    </label>
+                    <label className="text-[0.9vw]">9121760868</label>
+                  </div>
+                  {/* <div className="flex items-center">
                   <label>Warehouse:</label>
                   <label>
                     No. D-3/4/A -3/10/11/S-43/44/45, Peb Building1St Phase,
@@ -216,143 +226,161 @@ export default function Debit_Note_Template({ currentinvoice }) {
                     Taluk, Dod Ballapur-561203 , Karnataka
                   </label>
                 </div> */}
+                </div>
               </div>
-            </div>
-            <div className="col-span-2 float-left   w-full h-full ">
-              <div className="gap-y-[0.5vw] h-full w-full flex flex-col items-end">
-                <label className="text-[2vw] font-semibold">Invoice</label>
+              <div className="col-span-2 float-left   w-full h-full ">
+                <div className="gap-y-[0.1vw] h-full w-full flex flex-col items-end">
+                  <label className="text-[2vw] font-semibold">Debit Note</label>
+                  <div className="flex items-center gap-x-[0.5vw]">
+                    <label className="text-[0.9vw] text-[#737982]">
+                      Debit Date:
+                    </label>
+                    <label className="text-[0.9vw]">
+                      {dayjs(Get_Debit_Note[0]?.debit_date).format(
+                        "DD MMM, YYYY"
+                      )}
+                    </label>
+                  </div>
+                  <div className="flex items-center gap-x-[0.5vw]">
+                    <label className="text-[0.9vw] text-[#737982]">
+                      Debit No:
+                    </label>
+                    <label className="text-[0.9vw]">
+                      {Get_Debit_Note[0]?.debit_no}
+                    </label>
+                  </div>
 
-                <div className="flex items-center gap-x-[0.5vw]">
-                  <label className="text-[0.9vw] text-[#737982]">
-                    Invoice Date:
-                  </label>
-                  <label className="text-[0.9vw]">
-                    {dayjs(Get_Voijeans_list?.invoice_date).format(
-                      "DD MMM, YYYY"
-                    )}
-                  </label>
-                </div>
-                <div className="flex items-center gap-x-[0.5vw]">
-                  <label className="text-[0.9vw] text-[#737982]">
-                    Invoice No:
-                  </label>
-                  <label className="text-[0.9vw]">
-                    {Get_Voijeans_list?.invoice_no}
-                  </label>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="mt-[1vw]">
-            <div className="grid grid-cols-2 gap-x-[3vw] ">
-              <div className="col-span-1">
-                <div className="flex flex-col gap-y-[0.5vw]">
-                  <label className="text-[#3348FF] text-[1.1vw] font-semibold">
-                    Bill To
-                  </label>
-                  <label className="text-[1vw] font-bold">VOI Jeans</label>
-                  <label className="text-[0.9vw]">
-                    Venu Mall, First FloorUnit-F10, Nizamabad,
-                  </label>
-                  <div className="flex  gap-x-[0.5vw]">
-                    <label className="text-[#737982] text-[0.9vw]">
-                      Email:
+                  <div className="flex items-center gap-x-[0.5vw]">
+                    <label className="text-[0.9vw] text-[#737982]">
+                      Ref Invoice Date:
                     </label>
-                    <label className="text-[0.9vw]">VOI.DB@VOIJEANS.IN</label>
-                  </div>
-                  <div className="flex  gap-x-[0.5vw]">
-                    <label className="text-[#737982] text-[0.9vw]">
-                      Mobile:
-                    </label>
-                    <label className="text-[0.9vw]">+91 91217 60868</label>
-                  </div>
-                </div>
-              </div>
-              <div className="col-span-1 flex items-end justify-end">
-                <div className="border-[#3348FF] border-[0.1vw] rounded-[1vw] w-[13vw] h-[7vw]">
-                  <div className="w-full rounded-t-[1vw] bg-[#3348FF] flex items-center justify-center h-[40%]">
-                    <label className="text-white text-[1.2vw]">
-                      Balance Due Amount
+                    <label className="text-[0.9vw]">
+                      {dayjs(Get_Debit_Note[0]?.invoice_date).format(
+                        "DD MMM, YYYY"
+                      )}
                     </label>
                   </div>
-                  <div className="w-full h-[60%] flex items-center justify-center">
-                    <label className="text-[#3348FF] text-[1.7vw] font-semibold">{`₹ ${Formatamount(
-                      Math.round(Get_Debit_Note[0]?.net_amt)
-                    )}`}</label>
+                  <div className="flex items-center gap-x-[0.5vw]">
+                    <label className="text-[0.9vw] text-[#737982]">
+                      Ref Invoice No:
+                    </label>
+                    <label className="text-[0.9vw]">
+                      {Get_Debit_Note[0]?.in_invoice_no}
+                    </label>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+            <div className="mt-[1vw]">
+              <div className="grid grid-cols-2 gap-x-[3vw] ">
+                <div className="col-span-1">
+                  <div className="flex flex-col gap-y-[0.5vw]">
+                    <label className="text-[#3348FF] text-[1.1vw] font-semibold">
+                      Bill To
+                    </label>
+                    <label className="text-[1vw] font-bold">VOI Jeans</label>
+                    <label className="text-[0.9vw]">
+                      Venu Mall, First FloorUnit-F10, Nizamabad,
+                    </label>
+                    <div className="flex  gap-x-[0.5vw]">
+                      <label className="text-[#737982] text-[0.9vw]">
+                        Email:
+                      </label>
+                      <label className="text-[0.9vw]">VOI.DB@VOIJEANS.IN</label>
+                    </div>
+                    <div className="flex  gap-x-[0.5vw]">
+                      <label className="text-[#737982] text-[0.9vw]">
+                        Mobile:
+                      </label>
+                      <label className="text-[0.9vw]">+91 91217 60868</label>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-span-1 flex items-end justify-end">
+                  <div className="border-[#3348FF] border-[0.1vw] rounded-[1vw] w-[13vw] h-[7vw]">
+                    <div className="w-full rounded-t-[1vw] bg-[#3348FF] flex items-center justify-center h-[40%]">
+                      <label className="text-white text-[1.2vw]">
+                        Balance Due Amount
+                      </label>
+                    </div>
+                    <div className="w-full h-[60%] flex items-center justify-center">
+                      <label className="text-[#3348FF] text-[1.7vw] font-semibold">{`₹ ${Formatamount(
+                        Math.round(Get_Debit_Note[0]?.net_amt)
+                      )}`}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-          <div className="mt-[1.5vw] mb-[0.5vw]">
-            <label className="text-[#3348FF] text-[1.2vw] font-bold">
-              Taxable Amount
-            </label>
-          </div>
-          <div className="">
-            <ConfigProvider
-              theme={{
-                components: {
-                  Table: {
-                    // Customize hover styles
-                    rowHoverBg: "rgb(255, 255, 255, 0)",
-                    rowSelectedBg: "rgb(255, 255, 255, 0)",
-                    rowSelectedHoverBg: "rgb(255, 255, 255, 0)",
-                    borderRadius: "2vw", // Row border-radius
-                    shadowHover: "0 4px 6px rgba(0, 0, 0, 0.15)", // Shadow for hover
-                    //shadowSelected: '0 4px 8px rgba(0, 0, 0, 0.2)', // Shadow for selected
+            <div className="mt-[1.5vw] mb-[0.5vw]">
+              <label className="text-[#3348FF] text-[1.2vw] font-bold">
+                Taxable Amount
+              </label>
+            </div>
+            <div className="">
+              <ConfigProvider
+                theme={{
+                  components: {
+                    Table: {
+                      // Customize hover styles
+                      rowHoverBg: "rgb(255, 255, 255, 0)",
+                      rowSelectedBg: "rgb(255, 255, 255, 0)",
+                      rowSelectedHoverBg: "rgb(255, 255, 255, 0)",
+                      borderRadius: "2vw", // Row border-radius
+                      shadowHover: "0 4px 6px rgba(0, 0, 0, 0.15)", // Shadow for hover
+                      //shadowSelected: '0 4px 8px rgba(0, 0, 0, 0.2)', // Shadow for selected
+                    },
                   },
-                },
-              }}
-            >
-              <Table
-                className="custom-table-invoice"
-                style={{
-                  "--border-bottom": "1px solid #B1B9FF",
-                  "--border-right": "1px solid #B1B9FF",
                 }}
-                summary={(pageData) => {
-                  return (
-                    <tr>
-                      <td></td>
-                      <td
-                        style={{
-                          textAlign: "center",
-                          fontSize: "0.8vw",
-                          padding: "0",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        GRAND TOTAL
-                      </td>
+              >
+                <Table
+                  className="custom-table-invoice"
+                  style={{
+                    "--border-bottom": "1px solid #B1B9FF",
+                    "--border-right": "1px solid #B1B9FF",
+                  }}
+                  summary={(pageData) => {
+                    return (
+                      <tr>
+                        <td></td>
+                        <td
+                          style={{
+                            textAlign: "center",
+                            fontSize: "0.8vw",
+                            padding: "0",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          GRAND TOTAL
+                        </td>
 
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td
-                        style={{
-                          textAlign: "center",
-                          fontSize: "0.8vw",
-                          padding: "0",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {Get_Debit_Note[0]?.interest_amt}
-                      </td>
-                    </tr>
-                  );
-                }}
-                columns={columns}
-                pagination={false}
-                dataSource={Get_Debit_Note}
-                rowClassName={(record, index) => `custom-row-${index}`}
-              />
-            </ConfigProvider>
-          </div>
-          {/* <div className="mt-[2vw] px-[1vw] ">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td
+                          style={{
+                            textAlign: "center",
+                            fontSize: "0.8vw",
+                            padding: "0",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {Get_Debit_Note[0]?.interest_amt}
+                        </td>
+                      </tr>
+                    );
+                  }}
+                  columns={columns}
+                  pagination={false}
+                  dataSource={Get_Debit_Note}
+                  rowClassName={(record, index) => `custom-row-${index}`}
+                />
+              </ConfigProvider>
+            </div>
+            {/* <div className="mt-[2vw] px-[1vw] ">
             <thead className="flex pl-[1vw] rounded-t-[1vw] bg-[#3348FF] py-[0.5vw] text-[1vw] text-white ">
               <th className="w-[5%]  flex items-center justify-center">S.No</th>
               <th className="w-[25%]  flex items-center justify-center">
@@ -413,10 +441,10 @@ export default function Debit_Note_Template({ currentinvoice }) {
               </tr>
             </tbody>
           </div> */}
-          <div>
-            <div className="grid grid-cols-2  mt-[1vw]">
-              <div className="col-span-1 mt-[2vw]">
-                {/* <div className="flex flex-col gap-y-[0.5vw]">
+            <div>
+              <div className="grid grid-cols-2  mt-[1vw]">
+                <div className="col-span-1 mt-[2vw]">
+                  {/* <div className="flex flex-col gap-y-[0.5vw]">
                   <label className="text-[#3348FF] text-[1.1vw] font-semibold">
                     Bank Account Details
                   </label>
@@ -449,54 +477,54 @@ export default function Debit_Note_Template({ currentinvoice }) {
                     <label className="text-[0.9vw]">Savings</label>
                   </div>
                 </div> */}
-              </div>
-              <div className="col-span-1 mt-[1vw] flex">
-                <div className="w-[20%]"></div>
-                <div className="w-[80%]  flex h-full flex-col pr-[2vw]">
-                  <div className="grid grid-cols-2 gap-y-[1vw] h-full w-full">
-                    <div className="col-span-1">
-                      <div className="flex flex-col w-full gap-y-[0.5vw]">
-                        <label className=" text-[0.9vw] font-semibold">
-                          Total Invoice Amount:
-                        </label>
-                        <label className=" text-[0.9vw] font-semibold">
-                          Adavnce Paid Amount:
-                        </label>
-                        <label className=" text-[0.9vw] font-semibold">
-                          Total Interest Amount:
-                        </label>
-                      </div>
-                    </div>
-                    <div className="col-span-1 ">
-                      <div className="flex flex-col items-end gap-y-[0.5vw]">
-                        <label className=" text-[0.9vw] font-semibold">{`${Formatamount(
-                          Get_Debit_Note[0]?.total_invoice_amt
-                        )}`}</label>
-                        <label className=" text-[0.9vw] font-semibold">{`${Formatamount(
-                          Get_Debit_Note[0]?.advance_amount
-                        )}`}</label>
-                        <label className=" text-[0.9vw] font-semibold">
-                          {Get_Debit_Note[0]?.interest_amt}
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-[1vw]">
-                    <div className="border-b-[0.1vw] border-black w-full"></div>
-                    <div className="my-[0.5vw] flex items-center justify-between">
-                      <label className="text-[1.5vw] font-semibold">
-                        Net Amount:
-                      </label>
-                      <label className="font-semibold text-[1.5vw]">
-                        {`₹ ${Formatamount(
-                          Math.round(Get_Debit_Note[0]?.net_amt)
-                        )}`}
-                      </label>
-                    </div>
-                    <div className="border-b-[0.1vw] border-black w-full"></div>
-                  </div>
                 </div>
-                {/* <div className="border-t-[0.1vw] border-black w-[13vw] my-[1vw]"></div>
+                <div className="col-span-1 mt-[1vw] flex">
+                  <div className="w-[20%]"></div>
+                  <div className="w-[80%]  flex h-full flex-col pr-[2vw]">
+                    <div className="grid grid-cols-2 gap-y-[1vw] h-full w-full">
+                      <div className="col-span-1">
+                        <div className="flex flex-col w-full gap-y-[0.5vw]">
+                          <label className=" text-[0.9vw] font-semibold">
+                            Total Invoice Amount:
+                          </label>
+                          <label className=" text-[0.9vw] font-semibold">
+                            Adavnce Paid Amount:
+                          </label>
+                          <label className=" text-[0.9vw] font-semibold">
+                            Total Interest Amount:
+                          </label>
+                        </div>
+                      </div>
+                      <div className="col-span-1 ">
+                        <div className="flex flex-col items-end gap-y-[0.5vw]">
+                          <label className=" text-[0.9vw] font-semibold">{`+ ${Formatamount(
+                            Get_Debit_Note[0]?.total_invoice_amt
+                          )}`}</label>
+                          <label className=" text-[0.9vw] font-semibold">{`- ${Formatamount(
+                            Get_Debit_Note[0]?.advance_amount
+                          )}`}</label>
+                          <label className=" text-[0.9vw] font-semibold">
+                            {`- ${Get_Debit_Note[0]?.interest_amt}`}
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-[1vw]">
+                      <div className="border-b-[0.1vw] border-black w-full"></div>
+                      <div className="my-[0.5vw] flex items-center justify-between">
+                        <label className="text-[1.5vw] font-semibold">
+                          Net Amount:
+                        </label>
+                        <label className="font-semibold text-[1.5vw]">
+                          {`₹ ${Formatamount(
+                            Math.round(Get_Debit_Note[0]?.net_amt)
+                          )}`}
+                        </label>
+                      </div>
+                      <div className="border-b-[0.1vw] border-black w-full"></div>
+                    </div>
+                  </div>
+                  {/* <div className="border-t-[0.1vw] border-black w-[13vw] my-[1vw]"></div>
                 <div className="flex mt-[0.5vw] gap-x-[4.2vw]">
                   <label className="text-[#737982] font-bold text-[0.9vw]">
                     Amount Due:
@@ -504,11 +532,12 @@ export default function Debit_Note_Template({ currentinvoice }) {
                   <label className="text-[0.9vw] font-bold">$5775</label>
                 </div>
                 <div className="border-t-[0.1vw]  border-black w-[13vw] my-[1vw]"></div> */}
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="bg-[#D1D6FF]  w-full h-[3vw]"></div>
+        <footer className="bg-[#D1D6FF] fixed bottom-0  w-[60vw] h-[3vw]"></footer>
       </div>
     </>
   );

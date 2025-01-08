@@ -20,6 +20,7 @@ export default function InnoInvoiceTemplate({
   page,
   setCurrentTabTemp,
   currentTabTemp,
+  modal
 }) {
   const Get_Voijeans_list = useSelector((state) => state.akr.voi_jeans_by_id);
   const Get_Transaction = useSelector((state) => state.akr.transaction_byid);
@@ -253,22 +254,24 @@ export default function InnoInvoiceTemplate({
                   </span>
                   <span>Invoice</span>
                 </button>
-                <button
-                  className={`${
-                    currentTabTemp === 2
-                      ? "border-[#3348FF] text-[#3348FF] font-bold border-b-[0.2vw]"
-                      : ""
-                  } text-[1.2vw] w-[15vw] flex items-center justify-center gap-x-[1vw]`}
-                  onClick={() => setCurrentTabTemp(2)}
-                >
-                  <span>
-                    <RiBillLine
-                      color={currentTabTemp === 2 ? "#3348FF" : ""}
-                      size={"1.2vw"}
-                    />
-                  </span>
-                  <span>Bill</span>
-                </button>
+                {/* {modal === "" && ( */}
+                  <button
+                    className={`${
+                      currentTabTemp === 2
+                        ? "border-[#3348FF] text-[#3348FF] font-bold border-b-[0.2vw]"
+                        : ""
+                    } text-[1.2vw] w-[15vw] flex items-center justify-center gap-x-[1vw]`}
+                    onClick={() => setCurrentTabTemp(2)}
+                  >
+                    <span>
+                      <RiBillLine
+                        color={currentTabTemp === 2 ? "#3348FF" : ""}
+                        size={"1.2vw"}
+                      />
+                    </span>
+                    <span>Bill</span>
+                  </button>
+                {/* )} */}
               </>
             ) : (
               ""

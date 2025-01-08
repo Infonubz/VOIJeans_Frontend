@@ -1,13 +1,22 @@
 import { ConfigProvider, Table, Tooltip } from "antd";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BiSearchAlt } from "react-icons/bi";
+import { HiOutlineDotsVertical } from "react-icons/hi";
+import ReactPaginate from "react-js-pagination";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faChevronLeft,
+  faChevronRight,
+  faAngleDoubleLeft,
+  faAngleDoubleRight,
+} from "@fortawesome/free-solid-svg-icons";
 import { IoMdArrowDropright } from "react-icons/io";
 import { FaEye } from "react-icons/fa";
 import ModalPopup from "../../Common/Modal";
 import "../../Common/Modal.css";
-import InvoiceTemplate from "../InvoiceTemplate";
+import InvoiceTemplate from "../../Voi_Invoice/InvoiceTemplate";
 import { width } from "@fortawesome/free-solid-svg-icons/fa0";
-import RequestStatus from "../RequestStatus";
+import RequestStatus from "../../Voi_Invoice/RequestStatus";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Get_Voijeans_Invoice_By_Id,
@@ -18,34 +27,40 @@ import {
 } from "../../../Api/Voi_Jeans/Invoice";
 import dayjs from "dayjs";
 import { capitalizeFirstLetter } from "../../Common/Captalization";
-import Debit_Note_Template from "./Template";
+import { Tabs } from "antd";
 import {
-  Get_Debit_Note_By_Id,
+  Get_Innfashion_Outlet_Bill,
   Get_Innfashion_Status_By_Id,
+  Get_Innofashion_Invoice_List,
+  Get_Innofashion_Search,
+  Get_Innofashion_Search_By_Date,
 } from "../../../Api/Innofashion/Invoice";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faChevronLeft,
-  faChevronRight,
-  faAngleDoubleLeft,
-  faAngleDoubleRight,
-} from "@fortawesome/free-solid-svg-icons";
-import ReactPaginate from "react-js-pagination";
+import PaymentRequestApprove from "./../RequestApprove";
+import { MdFileDownload } from "react-icons/md";
+import InnoInvoiceTemplate from "./../InvoiceTemplate";
+import { useReactToPrint } from "react-to-print";
+import html2pdf from "html2pdf.js";
+import ReactToPrint from "react-to-print";
+import { jsPDF } from "jspdf";
+import Transaction from "./../Transaction";
+import OutletTransaction from "./Transaction";
+import LOGO from "../../../Assets/innlogo.png";
+import TransactionView from "./TransactionView";
 
-export default function Debit_Note() {
+export default function OutletBill() {
+  const componentRef = useRef();
+  const [fullamt, setFullAmt] = useState(false);
   const [currentTab, setCurrentTab] = useState(2);
-  const [currentinvoice, setCurrentInvoice] = useState("");
   const [showInvoice, setShowInvoice] = useState(false);
   const [showStatus, setShowStatus] = useState(false);
   const Formatamount = (amt) => {
     const formattedAmount = new Intl.NumberFormat("en-IN").format(amt);
     return formattedAmount;
   };
-  const user_id = sessionStorage.getItem("USER_ID");
-  const Get_Voijeans_list = useSelector((state) => state.akr.voi_jeans_list);
-  const Get_Innofashion_list = useSelector(
-    (state) => state.akr.innofashion_list
+  const Get_Innofashion_Outletbill_list = useSelector(
+    (state) => state.akr.outlet_list
   );
+  const Get_Outlet_Trans = useSelector((state) => state.akr.outlet_trans);
   const [invoiceno, setInvoiceNo] = useState(null);
   const [activePage, setActivePage] = useState(1);
   const handlePageChange = (pageNumber) => {
@@ -55,16 +70,24 @@ export default function Debit_Note() {
   const indexOfLastItem = activePage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems =
-    user_id === "VOIJ001"
-      ? Get_Voijeans_list?.length > 0 &&
-        Get_Voijeans_list?.slice(indexOfFirstItem, indexOfLastItem)
-      : Get_Innofashion_list?.length > 0 &&
-        Get_Innofashion_list?.slice(indexOfFirstItem, indexOfLastItem);
+    Get_Innofashion_Outletbill_list?.length > 0 &&
+    Get_Innofashion_Outletbill_list?.slice(indexOfFirstItem, indexOfLastItem);
   useEffect(() => {
     if (currentItems?.length === 0) {
       setActivePage(activePage - 1);
     }
   }, [currentItems, setActivePage, activePage]);
+  const [currentdata, setCurrentData] = useState("");
+  // print
+  // const reactToPrintFn = useReactToPrint({ contentRef });
+  ///
+  const printRef = useRef();
+  const contentRef = useRef();
+  const advanceref = useRef();
+  const [invoiceview, showInvoiceView] = useState(false);
+  const reactToPrintFn = () => {
+    console.log("Hi"); // This will print to the console when clicked.
+  };
   const columns = [
     {
       title: <span className="text-[0.9vw]">S. No</span>,
@@ -73,42 +96,55 @@ export default function Debit_Note() {
       // width: "5vw",
       render: (row, index, i) => {
         console.log("testingss", row.id);
+        const serialNumber = (activePage - 1) * itemsPerPage + (i + 1);
+
         return (
           <>
-            <label className="text-[0.9vw]">{i + 1}</label>
+            <label className="text-[0.9vw]">{serialNumber}</label>
           </>
         );
       },
     },
     {
-      title: <span className="text-[0.9vw] ">Invoice No</span>,
-      key: "invoice_no",
+      title: <span className="text-[0.9vw] ">Inno Invoice No</span>,
+      key: "in_invoice_no",
       align: "center",
-      // width: "7vw",
-      sorter: (a, b) =>
-        user_id === "INNO001"
-          ? a.voi_invoice_no?.localeCompare(b.voi_invoice_no)
-          : a.invoice_no?.localeCompare(b.invoice_no),
+      // width: "15vw",
+      sorter: (a, b) => a.in_invoice_no?.localeCompare(b.in_invoice_no),
       render: (row) => {
         console.log("testingss", row.id);
         return (
           <>
-            <label className="text-[0.9vw]">
-              {user_id === "INNO001" ? row.voi_invoice_no : row.invoice_no}
-            </label>
+            <label className="text-[0.9vw]">{row.in_invoice_no}</label>
           </>
         );
       },
     },
     {
-      title: <span className="text-[0.9vw]">Shipper Name</span>,
+      title: <span className="text-[0.9vw] ">VOI Invoice No</span>,
+      key: "voi_invoice_no",
+      align: "center",
+      // width: "15vw",
+      sorter: (a, b) => a.voi_invoice_no?.localeCompare(b.voi_invoice_no),
+      render: (row) => {
+        console.log("testingss", row.id);
+        return (
+          <>
+            <label className="text-[0.9vw]">{row.voi_invoice_no}</label>
+          </>
+        );
+      },
+    },
+    {
+      title: <span className="text-[0.9vw]">Shipper</span>,
       key: "shipper_name",
       align: "center",
+      // width: currentTab === 2 ? "35vw" : "25vw",
       sorter: (a, b) => a.party_branch_name?.localeCompare(b.party_branch_name),
       render: (row) => {
         return (
           <>
-            {row?.party_branch_name?.length > 20 ? (
+            {row?.party_branch_name?.length > 50 ? (
               <Tooltip
                 color="white"
                 overlayInnerStyle={{ color: "#3348FF" }}
@@ -118,7 +154,7 @@ export default function Debit_Note() {
               >
                 <span className="text-[0.9vw]">{`${capitalizeFirstLetter(
                   row?.party_branch_name
-                ).slice(0, 20)}...`}</span>
+                ).slice(0, 50)}...`}</span>
               </Tooltip>
             ) : (
               <span className="text-[0.9vw]">
@@ -133,6 +169,7 @@ export default function Debit_Note() {
       title: <span className="text-[0.9vw]">Invoice Date</span>,
       key: "invoice_date",
       align: "center",
+      // width: "15vw",
       sorter: (a, b) =>
         dayjs(a.invoice_date).valueOf() - dayjs(b.invoice_date).valueOf(),
       render: (row) => {
@@ -145,22 +182,11 @@ export default function Debit_Note() {
         );
       },
     },
-    // {
-    //   title: <span className="text-[0.9vw]">Due Date</span>,
-    //   key: "duedate",
-    //   align: "center",
-    //   render: (row) => {
-    //     return (
-    //       <>
-    //         <label className="text-[0.9vw]">{row.duedate}</label>
-    //       </>
-    //     );
-    //   },
-    // },
     {
-      title: <span className="text-[1vw]">Invoice Amt</span>,
+      title: <span className="text-[0.9vw]">Invoice Amt</span>,
       key: "net_amount",
       align: "center",
+      // width: "15vw",
       sorter: (a, b) => {
         if (
           typeof a?.net_amount === "number" &&
@@ -175,233 +201,111 @@ export default function Debit_Note() {
       render: (row) => {
         return (
           <>
-            <label className="text-[0.9vw]">
-              {row.net_amount != null
-                ? `₹ ${Formatamount(row.net_amount)}`
-                : "-"}
-            </label>
+            <label className="text-[0.9vw]">{`₹ ${Formatamount(
+              row.net_amount
+            )}`}</label>
           </>
         );
       },
     },
-    {
-      title: <span className="text-[1vw]">Credit Period </span>,
-      key: "credit_period",
-      align: "center",
-      render: (row) => {
-        console.log(row, "testingggg");
 
-        return (
-          <>
-            <label className="text-[0.9vw]">{`${row.credit_period} Days`}</label>
-          </>
-        );
-      },
-    },
-    // {
-    //   title: <span className="text-[1vw]">Adv Req (%)</span>,
-    //   key: "advance_percentage",
-    //   align: "center",
-    //   render: (row) => (
-    //     <>
-    //       <label className="text-[0.9vw]">{`${row.advance_percentage} %`}</label>
-    //     </>
-    //   ),
-    // },
-    // {
-    //   title: <span className="text-[1vw]">Adv. Paid. Amt</span>,
-    //   key: "advance_amount",
-    //   align: "center",
-    //   render: (row) => {
-    //     return (
-    //       <>
-    //         <label className="text-[0.9vw]">
-    //           {" "}
-    //           {row.advance_amount != null
-    //             ? `₹ ${Formatamount(row.advance_amount)}`
-    //             : "-"}
-    //         </label>
-    //       </>
-    //     );
-    //   },
-    // },
-    // {
-    //   title: <span className="text-[1vw]">Balance Amt</span>,
-    //   key: "balance_amount",
-    //   align: "center",
-    //   render: (row) => {
-    //     return (
-    //       <>
-    //         <label className="text-[0.9vw]">
-    //           {" "}
-    //           {row.balance_amount != null
-    //             ? `₹ ${Formatamount(row.balance_amount)}`
-    //             : "-"}
-    //         </label>
-    //       </>
-    //     );
-    //   },
-    // },
-    // {
-    //   title: <span className="text-[1vw]">Interest</span>,
-    //   key: "interest_days",
-    //   align: "center",
-    //   render: (row) => {
-    //     return (
-    //       <>
-    //         <label className="text-[0.9vw]">
-    //           {row.interest_days != null ? `${row.interest_days} Days` : "-"}
-    //         </label>
-    //       </>
-    //     );
-    //   },
-    // },
-    // {
-    //   title: <span className="text-[1vw]">Interest Amt</span>,
-    //   key: "interest_amt",
-    //   align: "center",
-    //   render: (row) => {
-    //     return (
-    //       <>
-    //         <label className="text-[0.9vw]">
-    //           {row.interest_amt != null
-    //             ? `₹ ${Formatamount(row.interest_amt)}`
-    //             : "-"}
-    //         </label>
-    //       </>
-    //     );
-    //   },
-    // },
     {
-      title: <span className="text-[0.9vw]">Adv Request</span>,
-      key: "voi_advance_request_id",
+      title: <span className="text-[0.9vw]">Payment status</span>,
+      key: "payment_status_id",
       align: "center",
-      render: (row) => {
-        console.log(row.voi_advance_request_id, "advrequest_id");
+      // width: "15vw",
 
+      render: (row) => {
+        // Partialy Paid = 1
+        // Paid = 2
+        // Overdue = 3
         return (
           <div className="flex flex-row gap-[1vw] justify-center items-center">
             <span
-              className={`flex border-[0.1vw] ${
-                row.voi_advance_request_id === 0
-                  ? "border-[#3348FF] cursor-pointer"
-                  : row.voi_advance_request_id === 1
-                  ? "border-[#FFD374] bg-[#FFEAA5] cursor-not-allowed"
-                  : row.voi_advance_request_id === 2
-                  ? "border-[#c6eec2] bg-[#ECFDF3] cursor-not-allowed"
-                  : row.voi_advance_request_id === 4
-                  ? "border-[#eca2a2] bg-[#FDECEC] cursor-not-allowed"
-                  : "border-[#686868] bg-[#dff4ff] cursor-not-allowed"
-              }   rounded-[1vw] h-[1.5vw] w-[6.9vw]`}
+              className={`flex  border-[0.1vw] ${
+                row.payment_status_id === 1
+                  ? "w-[100%] border-[#c6eec2] cursor-not-allowed "
+                  : row.payment_status_id === 2
+                  ? "border-[#c6eec2] cursor-not-allowed "
+                  : row.payment_status_id === 3
+                  ? "border-[#eca2a2] bg-[#FDECEC]"
+                  : "w-[80%] border-[#a5caec] cursor-pointer "
+              } rounded-[1vw] h-[1.5vw] w-[9vw]`}
               onClick={() => {
-                if (row.voi_advance_request_id === 0) {
-                  setShowStatus(true);
-                }
-                Get_Voijeans_Invoice_By_Id(dispatch, row.invoice_no);
+                // if (row.in_advance_request_id === 0) {
+                //   setShowStatus(true);
+                // }else{
+                //   setShowStatus(false);
+                // }
+                currentTab === 2 && setShowStatus(true);
+                setInvoiceNo(row.in_invoice_no);
+                setCurrentData(row);
+                Get_Innofashion_Search_By_Date(dispatch, row.voi_invoice_no);
+                // Get_Voijeans_Invoice_By_Id(dispatch, row.invoice_no);
               }}
             >
               <h1
-                className={`text-[0.80vw] rounded-full h-full  ${
-                  row.voi_advance_request_id === 0
-                    ? "w-[80%] bg-[#3348FF] text-white"
-                    : row.voi_advance_request_id === 1
-                    ? "w-[100%] bg-[#FFEAA5] text-[#FF9D00]"
-                    : row.voi_advance_request_id === 2
-                    ? "w-[100%] bg-[#ECFDF3] text-[#34AE2A]"
-                    : row.voi_advance_request_id === 4
-                    ? "w-[100%] bg-[#FDECEC] text-[#E52A2A]"
-                    : "w-[100%] bg-[#d6d6d6]  text-[#686868]"
+                className={`text-[0.80vw] rounded-full h-full ${
+                  row.payment_status_id === 1
+                    ? "w-[100%] text-[#34AE2A] bg-[#ECFDF3]"
+                    : row.payment_status_id === 2
+                    ? "w-[100%] text-[#34AE2A] bg-[#ECFDF3]"
+                    : row.payment_status_id === 3
+                    ? "w-[100%] text-[#E52A2A]"
+                    : "w-[80%] text-[#2A99FF] bg-[#dff4ff]"
                 }  font-bold`}
               >
-                {row.voi_advance_request}
+                {row.payment_status}
               </h1>
-              {row.voi_advance_request_id === 0 ? (
+              {row.payment_status_id === 0 ? (
                 <IoMdArrowDropright
                   size={"1.5vw"}
-                  color="#3348FF"
+                  color="#2A99FF"
                   className="mt-[-0.1vw]"
                 />
               ) : (
                 ""
               )}
             </span>
-          </div>
-        );
-      },
-    },
-    {
-      title: <span className="text-[0.9vw]">Payment status</span>,
-      key: "payment_status_id",
-      align: "center",
-      render: (row) => {
-        // Partialy Paid = 1
-        // Paid = 2
-        // Overdue = 3
-        console.log(row, "rowrowrowrowrowrowrowrow");
-
-        return (
-          <div className="flex flex-row gap-[1vw] justify-center items-center">
-            <span
-              className={`flex justify-center items-center    border-[0.1vw] ${
-                row.payment_status_id === 1
-                  ? "border-[#FFD374] bg-[#FFEAA5]"
-                  : row.payment_status_id === 2
-                  ? "border-[#c6eec2] bg-[#ECFDF3]"
-                  : row.payment_status_id === 3
-                  ? "border-[#eca2a2] bg-[#FDECEC]"
-                  : "border-[#a5caec] bg-[#dff4ff]"
-              }  p-[0.5vw] rounded-[1vw] h-[1.5vw] w-[7vw]`}
-            >
-              <h1
-                className={`text-[0.80vw] ${
-                  row.payment_status_id === 1
-                    ? "text-[#FF9D00]"
-                    : row.payment_status_id === 2
-                    ? "text-[#34AE2A] "
-                    : row.payment_status_id === 3
-                    ? "text-[#E52A2A]"
-                    : "text-[#2A99FF]"
-                }  font-bold`}
-              >
-                {row.payment_status}
-              </h1>
-            </span>
             <span>
-              <FaEye
+              {/* <FaEye
                 size={"1.2vw"}
                 className=" cursor-pointer"
                 onClick={() => {
                   setShowInvoice(true);
                   // setInvoiceNo(row.invoice_no);
-                  if (user_id === "INNO001") {
-                    Get_Debit_Note_By_Id(
-                      dispatch,
-                      user_id === "INNO001"
-                        ? row.voi_invoice_no
-                        : row.invoice_no
-                    );
-                  } else {
-                    Get_Debit_Note_By_Id(
-                      dispatch,
-                      user_id === "INNO001"
-                        ? row.voi_invoice_no
-                        : row.invoice_no
-                    );
-                    Get_Voijeans_Invoice_By_Id(
-                      dispatch,
-                      user_id === "INNO001" ? row.in_invoice_no : row.invoice_no
-                    );
+                  Get_Voijeans_Invoice_By_Id(dispatch, row.voi_invoice_no);
+                  Get_Voijeans_Invoice_ProductList_By_Id(
+                    dispatch,
+                    row.voi_invoice_no
+                  );
+                  Get_Voijeans_Invoice_HSN_Code(dispatch, row.voi_invoice_no);
+                }}
+              /> */}
+              <FaEye
+                size={"1.2vw"}
+                className=" cursor-pointer"
+                onClick={() => {
+                  if (currentTab === 2) {
+                    showInvoiceView(true);
+                    Get_Voijeans_Invoice_By_Id(dispatch, row.voi_invoice_no);
                     Get_Voijeans_Invoice_ProductList_By_Id(
                       dispatch,
-                      user_id === "INNO001" ? row.in_invoice_no : row.invoice_no
+                      row.voi_invoice_no
                     );
-                    Get_Voijeans_Invoice_HSN_Code(
-                      dispatch,
-                      user_id === "INNO001" ? row.in_invoice_no : row.invoice_no
-                    );
+                    Get_Voijeans_Invoice_HSN_Code(dispatch, row.voi_invoice_no);
+                    setCurrentData(row);
+                  } else {
+                    setShowInvoice(true);
                   }
-
-                  // setCurrentInvoice(row.invoice_no);
+                  // setInvoiceNo(row.invoice_no);
+                  // Get_Voijeans_Invoice_By_Id(dispatch, row.voi_invoice_no);
+                  // Get_Voijeans_Invoice_ProductList_By_Id(
+                  //   dispatch,
+                  //   row.voi_invoice_no
+                  // );
+                  // Get_Voijeans_Invoice_HSN_Code(dispatch, row.voi_invoice_no);
+                  setCurrentData(row);
                 }}
               />
             </span>
@@ -411,8 +315,6 @@ export default function Debit_Note() {
     },
   ];
 
-  //   {
-  //     key: 1,
   //     sno: 1,
   //     id: 25561,
   //     name: "John Doe",
@@ -554,43 +456,11 @@ export default function Debit_Note() {
   // ];
   const closeInvoiceModal = () => {
     setShowInvoice(false);
+    showInvoiceView(false);
   };
 
-  const response = {
-    invoice_no: "",
-    invoice_date: "",
-    party_name: "",
-    party_gst_no: "",
-    address: "",
-    state: "",
-    email: "",
-    phone: "",
-    product_list: [
-      {
-        category_name: "",
-        item_name: "",
-        hsn_code: "",
-        fit: "",
-        color: "",
-        catogory_list: [
-          {
-            item_code: "",
-            s_qty: "",
-            m_qty: "",
-            l_qty: "",
-            xl_qty: "",
-            xxl_qty: "",
-            totat_qty: "",
-            total_amt: "",
-            per_amt: "",
-            igst_per: "",
-            igst_amt: "",
-          },
-        ],
-      },
-    ],
-  };
   const dispatch = useDispatch();
+  const user_id = sessionStorage.getItem("USER_ID");
   // useEffect(() => {
   //   if (user_id === "VOIJ001") {
   //     Get_Voijeans_Invoice_List(dispatch);
@@ -611,26 +481,61 @@ export default function Debit_Note() {
     //   Tab: "All",
     //   id: 1,
     // },
-    // {
-    //   Tab: "Request Eligible",
-    //   id: 2,
-    // },
-    // // {
-    // //   Tab: "Not Eligible",
-    // //   id: 3,
-    // // },
-    // {
-    //   Tab: "Advance Paid Invoice",
-    //   id: 4,
-    // },
+    {
+      Tab: "Unpaid",
+      id: 2,
+    },
+    {
+      Tab: "Paid",
+      id: 3,
+    },
   ];
+  // useEffect(() => {
+  //   if (user_id === "VOIJ001") {
+  //     Get_Voijeans_Status_By_Id(dispatch, currentTab,"invoice");
+  //   }
+  // }, [currentTab]);
+  // useEffect(() => {
+  //   Get_Innofashion_Invoice_List(dispatch);
+  // }, []);
+  const downloadPDF = () => {
+    const element = contentRef.current;
+    html2pdf().from(element).save("content.pdf"); // Download the content as a PDF
+  };
   useEffect(() => {
-    if (user_id === "VOIJ001") {
-      Get_Voijeans_Status_By_Id(dispatch, 9, "invoice");
-    } else {
-      Get_Innfashion_Status_By_Id(dispatch, 9, "advreq");
-    }
+    Get_Innfashion_Outlet_Bill(dispatch, currentTab);
   }, [currentTab]);
+  const [currentTabTemp, setCurrentTabTemp] = useState(1);
+  console.log(currentdata, "currentdatacurrentdata852852");
+  const handlePrint = () => {
+    console.log(contentRef.current); // Check if this is the correct DOM element
+    const doc = new jsPDF({
+      unit: "mm",
+      format: [1117.6, 800],
+    });
+
+    const content =
+      currentTabTemp === 1 ? contentRef.current : advanceref.current;
+
+    const scaleFactor = 0.8;
+
+    doc.html(content, {
+      callback: function (doc) {
+        doc.save(
+          `${
+            currentTabTemp === 1
+              ? currentdata?.in_invoice_no
+              : `Advance-${currentdata.voi_invoice_no}`
+          }.pdf`
+        );
+      },
+      x: 10,
+      y: 10,
+      html2canvas: {
+        scale: scaleFactor,
+      },
+    });
+  };
   return (
     <>
       <div className="h-[70vh] w-full">
@@ -647,6 +552,15 @@ export default function Debit_Note() {
                 type="text"
                 className="bg-white outline-none pl-[2.5vw] text-[1vw] pr-[3vw] w-[15vw] h-[2.3vw] border-[0.1vw] border-[#dddddd] rounded-[0.7vw] shadow-md shadow-[#dadbde]"
                 placeholder="Search..."
+                onChange={(e) =>
+                  e.target.value != "" &&
+                  Get_Innofashion_Search(
+                    dispatch,
+                    e.target.value,
+                    currentTab,
+                    "invoice"
+                  )
+                }
               />
             </div>
             <div className="flex items-center gap-x-[4vw] pl-[5vw]">
@@ -667,6 +581,16 @@ export default function Debit_Note() {
         </div>
         <ConfigProvider
           theme={{
+            // components: {
+            //   Table: {
+            //     // Customize hover styles
+            //     rowHoverBg: "rgb(255, 255, 255, 0)",
+            //     rowSelectedBg: "rgb(255, 255, 255, 0)",
+            //     rowSelectedHoverBg: "rgb(255, 255, 255, 0)",
+            //     borderRadius: "2vw", // Row border-radius
+            //     shadowHover: "0 4px 6px rgba(0, 0, 0, 0.15)", // Shadow for hover
+            //     //shadowSelected: '0 4px 8px rgba(0, 0, 0, 0.2)', // Shadow for selected
+            //   },
             components: {
               Table: {
                 rowHoverBg: "rgb(255, 255, 255, 0)",
@@ -675,6 +599,7 @@ export default function Debit_Note() {
                 shadowHover: "0 4px 6px rgba(0, 0, 0, 0.15)",
               },
             },
+            // },
           }}
         >
           <Table
@@ -703,15 +628,41 @@ export default function Debit_Note() {
           className="border border-[#3348FF] border-b-8 border-r-8 border-b-[#3348FF] border-r-[#3348FF] rounded-md"
           show={showInvoice}
           onClose={closeInvoiceModal}
-          height="100vh"
-          width="60vw"
+          height={"65vh"}
+          width={"50vw"}
           closeicon={false}
           footer={null}
           radius={false}
         >
-          <Debit_Note_Template
-            setShowStatus={setShowStatus}
-            currentinvoice={currentinvoice}
+          <TransactionView
+            currentdata={currentdata}
+            page={"outlet"}
+            setCurrentTabTemp={setCurrentTabTemp}
+            currentTabTemp={currentTabTemp}
+          />
+        </ModalPopup>
+        <ModalPopup
+          className="border border-[#3348FF] border-b-8 border-r-8 border-b-[#3348FF] border-r-[#3348FF] rounded-md"
+          show={invoiceview}
+          onClose={closeInvoiceModal}
+          height={currentTab === 2 ? "100vh" : "65vh"}
+          width={currentTab === 2 ? "60vw" : "50vw"}
+          closeicon={false}
+          footer={null}
+          radius={false}
+        >
+          {/* <TransactionView
+            currentdata={currentdata}
+            page={"outlet"}
+            setCurrentTabTemp={setCurrentTabTemp}
+            currentTabTemp={currentTabTemp}
+          /> */}
+          <InnoInvoiceTemplate
+            currentdata={currentdata}
+            page={"outlet"}
+            setCurrentTabTemp={setCurrentTabTemp}
+            currentTabTemp={currentTabTemp}
+            modal={"test"}
           />
         </ModalPopup>
         <ModalPopup
@@ -719,17 +670,30 @@ export default function Debit_Note() {
           show={showStatus}
           onClose={() => setShowStatus(false)}
           height="auto"
-          width="50vw"
+          width="45vw"
           closeicon={false}
           footer={null}
           radius={true}
         >
-          <RequestStatus setShowStatus={setShowStatus} />
+          {/* <PaymentRequestApprove
+            invoiceno={invoiceno}
+            setShowStatus={setShowStatus}
+            page={"invoice"}
+            currentTab={currentTab}
+            fullamt={fullamt}
+          /> */}
+          <OutletTransaction
+            setShowStatus={setShowStatus}
+            invoiceno={invoiceno}
+            page={"invoice"}
+            currentTab={currentTab}
+            setTransShow={setShowStatus}
+            currentdata={currentdata}
+          />
         </ModalPopup>
       </div>
-      {/* Pagination */}
       <div className="h-[10vh] w-full flex items-center justify-center ">
-        {Get_Voijeans_list?.length > 10 && (
+        {Get_Innofashion_Outletbill_list?.length > 10 && (
           <div className="flex items-center pt-[2vh] justify-between w-full h-full px-[1vw]">
             {/* Showing Text */}
             <div className="text-black flex text-[1vw] gap-[0.5vw]">
@@ -743,7 +707,7 @@ export default function Debit_Note() {
               </span>
               <span>from</span>
               <span className="font-bold">
-                {Get_Voijeans_list?.length || 0}
+                {Get_Innofashion_Outletbill_list?.length || 0}
               </span>
               <span>data</span>
             </div>
@@ -752,7 +716,7 @@ export default function Debit_Note() {
               <ReactPaginate
                 activePage={activePage}
                 itemsCountPerPage={itemsPerPage}
-                totalItemsCount={Get_Voijeans_list?.length}
+                totalItemsCount={Get_Innofashion_Outletbill_list?.length}
                 pageRangeDisplayed={3}
                 onChange={handlePageChange}
                 className="inline-flex divide-x divide-gray-300"

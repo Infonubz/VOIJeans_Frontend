@@ -44,7 +44,6 @@
   border-right: none;
 }
 
-
 .custom-table-invoice .ant-table-cell:last-child {
   border-right: none; /* Remove border for the last cell */
 }
@@ -61,7 +60,7 @@
 /* .custom-table-invoice .ant-table-tbody > tr:last-child > th,
 .custom-table-invoice .ant-table-tbody > tr:last-child > td {
   border-bottom: none; /* Remove border for the last row */
-/* } */ 
+/* } */
 
 /* Optional: Ensure that header and other parts of the table remain scoped */
 .custom-table-invoice .ant-table {
@@ -82,19 +81,94 @@
 /* .custom-radio .ant-radio-checked .ant-radio-inner:after {
   background-color: #2196f3; 
 } */
-/* styles.css (or Pagination.module.css if using CSS Modules) */
 
-.pagination .page-item .page-link {
-  color: #1f4b7f;
-  border: 0.1vw solid #1f4b7f;
-  background-color: white;
-  height: 1vw;
-  width: 2vw;
-  border-radius: 0.2vw;
+.custom-active-class {
+  background-color: #4caf50 !important; /* Green */
+  color: white !important;
+  font-weight: bold;
 }
 
-.pagination .page-item.active .page-link {
-  background-color: #1f4b7f;
-  /* border-color: #00bfff; */
-  color: white;
+:where(.css-dev-only-do-not-override-17b3fd).ant-table-wrapper
+  .ant-table-thead
+  > tr
+  > th:not(:last-child):not(.ant-table-selection-column):not(
+    .ant-table-row-expand-icon-cell
+  ):not([colspan])::before,
+:where(.css-dev-only-do-not-override-17b3fd).ant-table-wrapper
+  .ant-table-thead
+  > tr
+  > td:not(:last-child):not(.ant-table-selection-column):not(
+    .ant-table-row-expand-icon-cell
+  ):not([colspan])::before {
+  background-color: #5d605d !important; /* Green */
+}
+
+/* Scrollbar for the whole page or specific element */
+::-webkit-scrollbar {
+  width: 0.2vw; /* For vertical scrollbar */
+  height: 10px; /* For horizontal scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background of the track */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the thumb */
+  border-radius: 10px; /* Rounded corners */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* Color when hovered */
+}
+:where(.css-dev-only-do-not-override-yl4m84).ant-select-outlined:not(
+    .ant-select-customize-input
+  )
+  .ant-select-selector {
+  border: none;
+}
+.ant-select-focused {
+  box-shadow: none !important; /* Removes the focus outline shadow */
+}
+.ant-select-selector {
+  outline: none !important; /* Removes the outline from the input area */
+}
+/* Remove border and outline by default */
+.ant-select-selector {
+  border: none !important;
+  outline: none !important;
+  transition: border 0.3s ease;
+  padding: 0;
+}
+
+/* Add border when the Select is focused */
+.ant-select-focused .ant-select-selector {
+  border: none !important; /* Custom border color */
+  box-shadow: none !important; /* Remove any shadow */
+}
+/* Customize the placeholder text color */
+.ant-select-selection-placeholder {
+  color: #9ca3af !important; /* Set your desired color */
+  font-size: 1vw; /* Adjust font size if needed */
+  transition: color 0.3s ease; /* Optional: smooth color transition */
+}
+
+/* Optional: Adjust color on focus */
+.ant-select-focused .ant-select-selection-placeholder {
+  color: #9ca3af !important; /* Different color when focused */
+}
+.ant-select-dropdown {
+  max-height: 10vw !important; /* Adjust based on your layout */
+  overflow-y: auto !important; /* Force scrollable content */
+}
+
+.ant-select-dropdown-menu {
+  max-height: inherit;
+  overflow-y: inherit;
+}
+:where(.css-dev-only-do-not-override-xnito5).ant-select-single:not(
+    .ant-select-customize-input
+  )
+  .ant-select-selector {
+  padding: 0;
 }

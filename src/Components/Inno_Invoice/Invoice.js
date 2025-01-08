@@ -19,6 +19,8 @@ import { width } from "@fortawesome/free-solid-svg-icons/fa0";
 import RequestStatus from "../Voi_Invoice/RequestStatus";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  Get_Inno_Account_List,
+  Get_Voi_Account_List,
   Get_Voijeans_Invoice_By_Id,
   Get_Voijeans_Invoice_HSN_Code,
   Get_Voijeans_Invoice_List,
@@ -181,23 +183,6 @@ export default function Innofashion_Invoice() {
       },
     },
     {
-      title: <span className="text-[0.9vw]">Status Date</span>,
-      key: "invoice_date",
-      align: "center",
-      className: currentTab === 2 ? "hidden" : "",
-      sorter: (a, b) =>
-        dayjs(a.adv_paid_date).valueOf() - dayjs(b.adv_paid_date).valueOf(),
-      render: (row) => {
-        return (
-          <>
-            <label className="text-[0.9vw]">
-              {dayjs(row.adv_paid_date).format("DD MMM, YYYY")}
-            </label>
-          </>
-        );
-      },
-    },
-    {
       title: <span className="text-[0.9vw]">Invoice Amt</span>,
       key: "net_amount",
       align: "center",
@@ -223,7 +208,25 @@ export default function Innofashion_Invoice() {
       },
     },
     {
-      title: <span className="text-[1vw]">Credit</span>,
+      title: <span className="text-[0.9vw]">Closed</span>,
+      key: "invoice_date",
+      align: "center",
+      className: currentTab === 2 ? "hidden" : "",
+      sorter: (a, b) =>
+        dayjs(a.adv_paid_date).valueOf() - dayjs(b.adv_paid_date).valueOf(),
+      render: (row) => {
+        return (
+          <>
+            <label className="text-[0.9vw]">
+              {dayjs(row.adv_paid_date).format("DD MMM, YYYY")}
+            </label>
+          </>
+        );
+      },
+    },
+
+    {
+      title: <span className="text-[0.9vw]">Credit</span>,
       key: "credit_period",
       align: "center",
       className: currentTab === 2 ? "hidden" : "",
@@ -236,19 +239,23 @@ export default function Innofashion_Invoice() {
       },
     },
     {
-      title: <span className="text-[1vw]">Adv Req (%)</span>,
+      title: <span className="text-[0.9vw]">Adv Req (%)</span>,
       key: "advance_percentage",
       align: "center",
       className: currentTab === 2 ? "hidden" : "",
       render: (row) => (
         <>
-          <label className="text-[0.9vw]">{`${row.advance_percentage} %`}</label>
+          <label className="text-[0.9vw]">
+            {row.advance_percentage != null
+              ? `${row.advance_percentage} %`
+              : "-"}
+          </label>
         </>
       ),
     },
 
     {
-      title: <span className="text-[1vw]">Adv. Req. Amt</span>,
+      title: <span className="text-[0.9vw]">Adv. Req. Amt</span>,
       key: "advance_amount",
       align: "center",
       className: currentTab === 2 ? "hidden" : "",
@@ -266,7 +273,7 @@ export default function Innofashion_Invoice() {
       },
     },
     {
-      title: <span className="text-[1vw]">Balance Amt</span>,
+      title: <span className="text-[0.9vw]">Bal Amt</span>,
       key: "balance_amount",
       align: "center",
       className: currentTab === 2 ? "hidden" : "",
@@ -284,15 +291,29 @@ export default function Innofashion_Invoice() {
       },
     },
     {
-      title: <span className="text-[1vw]">Interest</span>,
-      key: "interest_amt",
+      title: <span className="text-[0.9vw]">Interest</span>,
+      key: "interest_days",
       align: "center",
-      className: currentTab === 2 ? "hidden" : "",
+      className: currentTab != 2 ? "" : "hidden",
       render: (row) => {
         return (
           <>
             <label className="text-[0.9vw]">
-              {" "}
+              {row.interest_days != null ? `${row.interest_days} Days` : "-"}
+            </label>
+          </>
+        );
+      },
+    },
+    {
+      title: <span className="text-[0.9vw]">Interest Amt</span>,
+      key: "interest_amt",
+      align: "center",
+      className: currentTab != 2 ? "" : "hidden",
+      render: (row) => {
+        return (
+          <>
+            <label className="text-[0.9vw]">
               {row.interest_amt != null
                 ? `₹ ${Formatamount(row.interest_amt)}`
                 : "-"}
@@ -343,6 +364,15 @@ export default function Innofashion_Invoice() {
                   setInvoiceNo(row.voi_invoice_no);
                   setCurrentData(row);
                   Get_Innofashion_Search_By_Date(dispatch, row.voi_invoice_no);
+                  Get_Voijeans_Invoice_By_Id(dispatch, row.voi_invoice_no);
+                  Get_Voijeans_Invoice_ProductList_By_Id(
+                    dispatch,
+                    row.voi_invoice_no
+                  );
+                  Get_Voijeans_Invoice_HSN_Code(dispatch, row.voi_invoice_no);
+                  setCurrentData(row);
+                  Get_Inno_Account_List(dispatch);
+                  Get_Voi_Account_List(dispatch);
                   // Get_Voijeans_Invoice_By_Id(dispatch, row.invoice_no);
                 }}
               >
@@ -383,6 +413,16 @@ export default function Innofashion_Invoice() {
                   setShowStatus(true);
                   setInvoiceNo(row.voi_invoice_no);
                   setFullAmt(true);
+                  setInvoiceNo(row.voi_invoice_no);
+                  setCurrentData(row);
+                  Get_Innofashion_Search_By_Date(dispatch, row.voi_invoice_no);
+                  Get_Voijeans_Invoice_By_Id(dispatch, row.voi_invoice_no);
+                  Get_Voijeans_Invoice_ProductList_By_Id(
+                    dispatch,
+                    row.voi_invoice_no
+                  );
+                  Get_Voijeans_Invoice_HSN_Code(dispatch, row.voi_invoice_no);
+                  setCurrentData(row);
                   // Get_Voijeans_Invoice_By_Id(dispatch, row.invoice_no);
                 }}
               >
@@ -440,41 +480,7 @@ export default function Innofashion_Invoice() {
                 {row.payment_status}
               </h1>
             </span>
-            {/* <span>
-              <FaEye
-                size={"1.2vw"}
-                className=" cursor-pointer"
-                onClick={() => {
-                  setShowInvoice(true);
-                  // setInvoiceNo(row.invoice_no);
-                  Get_Voijeans_Invoice_By_Id(dispatch, row.voi_invoice_no);
-                  Get_Voijeans_Invoice_ProductList_By_Id(
-                    dispatch,
-                    row.voi_invoice_no
-                  );
-                  Get_Voijeans_Invoice_HSN_Code(dispatch, row.voi_invoice_no);
-                }}
-              />
-            </span> */}
-          </div>
-        );
-      },
-    },
-    {
-      title: <span className="text-[1vw]">View</span>,
-      key: "balance_amount",
-      align: "center",
-      // className: currentTab === 2 ? "hidden" : "",
-      render: (row) => {
-        return (
-          <>
-            {/* <label className="text-[0.9vw]">
-              {" "}
-              {row.balance_amount != null
-                ? `₹ ${Formatamount(row.balance_amount)}`
-                : "-"}
-            </label> */}
-            <span className="flex items-center justify-center gap-x-[0.5vw]">
+            <span>
               <FaEye
                 size={"1.2vw"}
                 className=" cursor-pointer"
@@ -490,17 +496,8 @@ export default function Innofashion_Invoice() {
                   setCurrentData(row);
                 }}
               />
-              {/* <MdFileDownload
-                size={"1.2vw"}
-                className=" cursor-pointer"
-                onClick={() => {
-                  handlePrint();
-                  setCurrentData(row);
-                  console.log("tesjschjdsc");
-                }}
-              /> */}
             </span>
-          </>
+          </div>
         );
       },
     },
@@ -714,6 +711,10 @@ export default function Innofashion_Invoice() {
       Tab: "Advance Paid Invoice",
       id: 3,
     },
+    {
+      Tab: "Closed Invoice",
+      id: 9,
+    },
   ];
   // useEffect(() => {
   //   if (user_id === "VOIJ001") {
@@ -747,7 +748,7 @@ export default function Innofashion_Invoice() {
 
               <input
                 type="text"
-                className="bg-white outline-none pl-[2.5vw] text-[1vw] pr-[3vw] w-[15vw] h-[2.3vw] border-[0.1vw] border-[#dddddd] rounded-[0.7vw] shadow-md shadow-[#dadbde]"
+                className="bg-white outline-none pl-[2.5vw] text-[0.9vw] pr-[3vw] w-[15vw] h-[2.3vw] border-[0.1vw] border-[#dddddd] rounded-[0.7vw] shadow-md shadow-[#dadbde]"
                 placeholder="Search..."
                 onChange={(e) =>
                   e.target.value != "" &&
@@ -770,7 +771,7 @@ export default function Innofashion_Invoice() {
                   } `}
                   onClick={() => setCurrentTab(item.id)}
                 >
-                  <div className="text-[1vw]  text-center">{item.Tab}</div>
+                  <div className="text-[0.9vw]  text-center">{item.Tab}</div>
                 </div>
               ))}
             </div>
@@ -778,15 +779,23 @@ export default function Innofashion_Invoice() {
         </div>
         <ConfigProvider
           theme={{
+            // components: {
+            //   Table: {
+            //     // Customize hover styles
+            //     rowHoverBg: "rgb(255, 255, 255, 0)",
+            //     rowSelectedBg: "rgb(255, 255, 255, 0)",
+            //     rowSelectedHoverBg: "rgb(255, 255, 255, 0)",
+            //     borderRadius: "2vw", // Row border-radius
+            //     shadowHover: "0 4px 6px rgba(0, 0, 0, 0.15)", // Shadow for hover
+            //     //shadowSelected: '0 4px 8px rgba(0, 0, 0, 0.2)', // Shadow for selected
+            //   },
+            // },
             components: {
               Table: {
-                // Customize hover styles
                 rowHoverBg: "rgb(255, 255, 255, 0)",
                 rowSelectedBg: "rgb(255, 255, 255, 0)",
-                rowSelectedHoverBg: "rgb(255, 255, 255, 0)",
-                borderRadius: "2vw", // Row border-radius
-                shadowHover: "0 4px 6px rgba(0, 0, 0, 0.15)", // Shadow for hover
-                //shadowSelected: '0 4px 8px rgba(0, 0, 0, 0.2)', // Shadow for selected
+                borderRadius: "2vw",
+                shadowHover: "0 4px 6px rgba(0, 0, 0, 0.15)",
               },
             },
           }}
@@ -861,7 +870,7 @@ export default function Innofashion_Invoice() {
         {Get_Innofashion_list?.length > 10 && (
           <div className="flex items-center pt-[2vh] justify-between w-full h-full px-[1vw]">
             {/* Showing Text */}
-            <div className="text-black flex text-[1vw] gap-[0.5vw]">
+            <div className="text-black flex text-[0.9vw] gap-[0.5vw]">
               <span>Showing</span>
               <span className="font-bold">
                 {currentItems?.length > 0

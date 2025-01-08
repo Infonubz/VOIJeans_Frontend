@@ -147,7 +147,7 @@ export default function InvoiceTab() {
     //   },
     // },
     {
-      title: <span className="text-[1vw]">Invoice Amt</span>,
+      title: <span className="text-[0.9vw]">Invoice Amt</span>,
       key: "net_amount",
       align: "center",
       sorter: (a, b) => {
@@ -174,7 +174,53 @@ export default function InvoiceTab() {
       },
     },
     {
-      title: <span className="text-[1vw]">Credit Period </span>,
+      title: <span className="text-[0.9vw]">Closed Date</span>,
+      key: "invoice_date",
+      align: "center",
+      className: currentTab === 2 ? "hidden" : "",
+      sorter: (a, b) =>
+        dayjs(a.adv_paid_date).valueOf() - dayjs(b.adv_paid_date).valueOf(),
+      render: (row) => {
+        return (
+          <>
+            <label className="text-[0.9vw]">
+              {dayjs(row.adv_paid_date).format("DD MMM, YYYY")}
+            </label>
+          </>
+        );
+      },
+    },
+    // {
+    //   title: <span className="text-[0.9vw]">Credit</span>,
+    //   key: "credit_period",
+    //   align: "center",
+    //   className: currentTab === 2 ? "hidden" : "",
+    //   render: (row) => {
+    //     return (
+    //       <>
+    //         <label className="text-[0.9vw]">{`${row.credit_period} Days`}</label>
+    //       </>
+    //     );
+    //   },
+    // },
+    // {
+    //   title: <span className="text-[0.9vw]">Adv Req (%)</span>,
+    //   key: "advance_percentage",
+    //   align: "center",
+    //   className: currentTab === 2 ? "hidden" : "",
+    //   render: (row) => (
+    //     <>
+    //       <label className="text-[0.9vw]">
+    //         {row.advance_percentage != null
+    //           ? `${row.advance_percentage} %`
+    //           : "-"}
+    //       </label>
+    //     </>
+    //   ),
+    // },
+   
+    {
+      title: <span className="text-[0.9vw]">Credit  </span>,
       key: "credit_period",
       align: "center",
       className: currentTab === 4 ? "" : "hidden",
@@ -190,7 +236,7 @@ export default function InvoiceTab() {
       },
     },
     {
-      title: <span className="text-[1vw]">Adv Req (%)</span>,
+      title: <span className="text-[0.9vw]">Adv Req (%)</span>,
       key: "advance_percentage",
       align: "center",
       className: currentTab === 4 ? "" : "hidden",
@@ -201,7 +247,7 @@ export default function InvoiceTab() {
       ),
     },
     {
-      title: <span className="text-[1vw]">Adv. Paid. Amt</span>,
+      title: <span className="text-[0.9vw]">Adv. Req. Amt</span>,
       key: "advance_amount",
       align: "center",
       className: currentTab === 4 ? "" : "hidden",
@@ -219,10 +265,10 @@ export default function InvoiceTab() {
       },
     },
     {
-      title: <span className="text-[1vw]">Balance Amt</span>,
+      title: <span className="text-[0.9vw]">Bal Amt</span>,
       key: "balance_amount",
       align: "center",
-      className: currentTab === 4 ? "" : "hidden",
+      className: currentTab === 4 || currentTab === 9 ? "" : "hidden",
       render: (row) => {
         return (
           <>
@@ -237,10 +283,10 @@ export default function InvoiceTab() {
       },
     },
     {
-      title: <span className="text-[1vw]">Interest</span>,
+      title: <span className="text-[0.9vw]">Interest</span>,
       key: "interest_days",
       align: "center",
-      className: currentTab === 4 ? "" : "hidden",
+      className: currentTab === 4 || currentTab === 9 ? "" : "hidden",
       render: (row) => {
         return (
           <>
@@ -252,10 +298,10 @@ export default function InvoiceTab() {
       },
     },
     {
-      title: <span className="text-[1vw]">Interest Amt</span>,
+      title: <span className="text-[0.9vw]">Interest Amt</span>,
       key: "interest_amt",
       align: "center",
-      className: currentTab === 4 ? "" : "hidden",
+      className: currentTab === 4 || currentTab === 9 ? "" : "hidden",
       render: (row) => {
         return (
           <>
@@ -588,7 +634,7 @@ export default function InvoiceTab() {
     // },
 
     {
-      Tab: "Advance Request Eligible",
+      Tab: "Advance Request",
       id: 2,
     },
 
@@ -600,10 +646,10 @@ export default function InvoiceTab() {
       Tab: "Advance Received",
       id: 4,
     },
-    // {
-    //   Tab: "Other Invoice",
-    //   id: 3,
-    // },
+    {
+      Tab: "Closed Invoice",
+      id: 9,
+    },
   ];
   useEffect(() => {
     if (user_id === "VOIJ001") {
@@ -624,7 +670,7 @@ export default function InvoiceTab() {
               />
               <input
                 type="text"
-                className="bg-white outline-none pl-[2.5vw] text-[1vw] pr-[3vw] w-[15vw] h-[2.3vw] border-[0.1vw] border-[#dddddd] rounded-[0.7vw] shadow-md shadow-[#dadbde]"
+                className="bg-white outline-none pl-[2.5vw] text-[0.9vw] pr-[3vw] w-[15vw] h-[2.3vw] border-[0.1vw] border-[#dddddd] rounded-[0.7vw] shadow-md shadow-[#dadbde]"
                 placeholder="Search..."
                 // onChange={(e) => Get_Voijeans_Search(dispatch, e.target.value)}
                 onChange={(e) =>
@@ -650,7 +696,7 @@ export default function InvoiceTab() {
                   }`}
                   onClick={() => setCurrentTab(item.id)}
                 >
-                  <div className="text-[1vw] text-center">{item.Tab}</div>
+                  <div className="text-[0.9vw] text-center">{item.Tab}</div>
                 </div>
               ))}
             </div>
@@ -707,7 +753,7 @@ export default function InvoiceTab() {
         {Get_Voijeans_list?.length > 10 && (
           <div className="flex items-center pt-[2vh] justify-between w-full h-full px-[1vw]">
             {/* Showing Text */}
-            <div className="text-black flex text-[1vw] gap-[0.5vw]">
+            <div className="text-black flex text-[0.9vw] gap-[0.5vw]">
               <span>Showing</span>
               <span className="font-bold">
                 {currentItems?.length > 0
@@ -733,8 +779,8 @@ export default function InvoiceTab() {
                 className="inline-flex divide-x divide-gray-300"
                 itemClass="border border-gray-300"
                 linkClass="px-[0.8vw] py-[0.5vw] text-black font-bold bg-gray-100 hover:bg-gray-200"
-                activeClass="bg-blue-500 text-white"
-                innerClass="inline-flex  divide-x divide-gray-300"
+                activeClass="custom-active-class"
+                innerClass="inline-flex divide-x divide-gray-300"
                 prevPageText={
                   <FontAwesomeIcon icon={faChevronLeft} size="1vw" />
                 }

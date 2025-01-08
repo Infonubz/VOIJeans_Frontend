@@ -6,6 +6,7 @@ import Innofashion_Invoice from "../Inno_Invoice/Invoice";
 import Inno_Adv_Request from "../Inno_Invoice/Inno_Adv_Request/Inno_Adv_Req";
 import Debit_Note from "./Debit_Note/Debit_Note";
 import VoiHome from "./Home/Home";
+import OutletBill from "../Inno_Invoice/OutletBill/Outletbill";
 
 export default function Invoice() {
   const navigation = useNavigate();
@@ -13,7 +14,7 @@ export default function Invoice() {
   const user_id = sessionStorage.getItem("USER_ID");
   return (
     <div className="h-full w-full">
-      <div className="bg-[#F4F5FA] h-[100vh] w-full pt-[4vw] pb-[5.5vw] px-[2vw] ">
+      <div className="bg-[#F4F5FA] h-[100vh] w-full pt-[4vw] pb-[4.5vw] px-[2vw] ">
         <div className="bg-[white] rounded-bl-[1vw] rounded-br-[1vw] rounded-tr-[1vw] w-full h-full border-[0.15vw] border-[#DEDEDE] relative">
           <div
             className="absolute left-[-0.1vw] top-[-3.5vw]"
@@ -50,12 +51,12 @@ export default function Invoice() {
               </text> */}
             </svg>
             <label
-              className="text-[1vw] cursor-pointer absolute left-[3.2vw] top-[1.2vw] "
+              className="text-[1vw] cursor-pointer absolute left-[2.2vw] top-[1.2vw] "
               style={{
                 zIndex: 2,
               }}
             >
-              Home
+              Dashboard
             </label>
           </div>
           {currentTab === 1 && (
@@ -203,7 +204,7 @@ export default function Invoice() {
               Debit Note
             </label>
           </div>
-          {/* {user_id === "INNO001" && (
+          {user_id === "INNO001" && (
             <>
               <div
                 className="absolute left-[39.1vw] top-[-3.5vw]"
@@ -227,18 +228,17 @@ export default function Invoice() {
                     stroke="#DEDEDE"
                     strokeWidth="2"
                   />
-           
                 </svg>
                 <label
-                  className="text-[1vw] cursor-pointer absolute left-[1.2vw] top-[1.2vw] "
+                  className="text-[1vw] cursor-pointer absolute left-[2.2vw] top-[1.2vw] "
                   style={{
                     zIndex: 2,
                   }}
                 >
-                  Inflow Payment
+                  Outlet Bill
                 </label>
               </div>
-              <div
+              {/* <div
                 className="absolute left-[49vw] top-[-3.5vw]"
                 onClick={() => SetCurrentTab(6)}
               >
@@ -270,9 +270,9 @@ export default function Invoice() {
                 >
                   Outflow Payment
                 </label>
-              </div>
+              </div> */}
             </>
-          )} */}
+          )}
           {currentTab === 3 && (
             <div
               className=" absolute top-[-0.1vw] left-[19.5vw] w-[9.7vw] border-[0.15vw] border-white"
@@ -323,6 +323,7 @@ export default function Invoice() {
           )}
           {currentTab === 4 ? <Debit_Note /> : ""}
           {currentTab === 1 && <VoiHome />}
+          {currentTab === 5 && <OutletBill />}
         </div>
       </div>
 

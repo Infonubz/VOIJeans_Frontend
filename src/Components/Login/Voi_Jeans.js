@@ -147,7 +147,7 @@ export default function Voi_Jeans({setForgotPassword}) {
                     LOGIN
                   </button>
                 </div>
-                <div className="flex justify-between items-center w-[26vw]">
+                {/* <div className="flex justify-between items-center w-[26vw]">
                   <div>
                     <Checkbox
                       onChange={(e) => {}}
@@ -164,7 +164,7 @@ export default function Voi_Jeans({setForgotPassword}) {
                       Forgot Password
                     </p>
                   </div>
-                </div>
+                </div> */}
                 <label className="text-[0.9vw] text-center underline underline-offset-2 text-[#3348FF]">
                   @VOI Jeans
                 </label>

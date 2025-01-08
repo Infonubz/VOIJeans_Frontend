@@ -5,6 +5,8 @@ import {
   INNOFASHION_COUNT,
   INNOFASHION_DATE,
   INNOFASHION_INVOICE_LIST,
+  INNOFASHION_OUTLET_LIST,
+  OUTLET_TRANSACTION_BY_ID,
   TRANSACTION_BY_ID,
 } from "../../Store/Type";
 
@@ -31,7 +33,16 @@ export const Get_Innofashion_Count = async (dispatch) => {
 };
 export const Get_Innfashion_Status_By_Id = async (dispatch, status, module) => {
   console.log(module, "testinghjkl8888");
-  const status_id = status === 1 ? 5 : status === 2 ? 0 : status === 3 ? 1 : 4;
+  const status_id =
+    status === 1
+      ? 5
+      : status === 2
+      ? 0
+      : status === 3
+      ? 1
+      : status === 9
+      ? 9
+      : 4;
   const status_id_2 =
     status === 1
       ? 6
@@ -43,6 +54,8 @@ export const Get_Innfashion_Status_By_Id = async (dispatch, status, module) => {
       ? 3
       : status === 8
       ? 8
+      : status === 9
+      ? 9
       : 1;
   try {
     const response = await axios.get(
@@ -51,6 +64,19 @@ export const Get_Innfashion_Status_By_Id = async (dispatch, status, module) => {
       }`
     );
     dispatch({ type: INNOFASHION_INVOICE_LIST, payload: response.data });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    // return null;
+  }
+};
+
+export const Get_Innfashion_Outlet_Bill = async (dispatch, status) => {
+  try {
+    const response = await axios.get(
+      `${apiUrl}/oulet-bill-invoice/${status === 2 ? 0 : 1}`
+    );
+    dispatch({ type: INNOFASHION_OUTLET_LIST, payload: response.data });
     return response.data;
   } catch (error) {
     handleError(error);
@@ -374,13 +400,73 @@ export const TransactionSubmit = async (
 
     toast.success(response?.data?.message);
     // InnofashionRequest(1, dispatch, invoiceno, "invoice", "", false, 2, false);
-    if (currentTab === 2) {
-      Get_Innfashion_Status_By_Id(dispatch, 2, "advreq");
-    } else if (currentTab === 3) {
-      Get_Innfashion_Status_By_Id(dispatch, 3, "advreq");
+    if (page === "invoice") {
+      if (currentTab === 2) {
+        Get_Innfashion_Status_By_Id(dispatch, 2, "invoice");
+      } else {
+        Get_Innfashion_Status_By_Id(dispatch, 3, "invoice");
+      }
     } else {
-      Get_Innfashion_Status_By_Id(dispatch, 4, "advreq");
+      if (currentTab === 2) {
+        Get_Innfashion_Status_By_Id(dispatch, 2, "advreq");
+      } else if (currentTab === 3) {
+        Get_Innfashion_Status_By_Id(dispatch, 3, "advreq");
+      } else {
+        Get_Innfashion_Status_By_Id(dispatch, 4, "advreq");
+      }
     }
+  } catch (error) {
+    console.log(error, "fghjsssssssss");
+
+    if (error?.response?.data?.error) {
+      toast.warning(error?.response?.data?.error);
+    } else {
+      console.log(
+        error?.response?.data?.message,
+        "An error occurred. Please try again."
+      );
+      toast.error(error?.response?.data?.message);
+    }
+    return null;
+  }
+};
+
+export const OutletTransactionSubmit = async (
+  value,
+  dispatch,
+  invoiceno,
+  currentTab,
+  page,
+  adv_paid_date
+) => {
+  console.log(value, "valuuuu");
+  const payloaddata = {
+    transaction_date: value.transaction_date,
+    from_bank_details: value.from_bank,
+    to_bank_details: value.to_bank,
+    transaction_amt: value.transaction_amt,
+    remarks: "",
+    transaction_id: value.transaction_id,
+    payment_status_id: 1,
+    payment_status: "Paid",
+  };
+
+  const url = `${apiUrl}/outlet-transactions/${invoiceno}`;
+  const method = "put";
+  const payload = payloaddata;
+
+  try {
+    const response = await axios({
+      method,
+      url,
+      data: payload,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    toast.success(response?.data?.message);
+    Get_Innfashion_Outlet_Bill(dispatch, 2);
   } catch (error) {
     console.log(error, "fghjsssssssss");
 
@@ -403,6 +489,22 @@ export const Get_Transaction_By_Id = async (dispatch, invoiceno) => {
     );
     dispatch({
       type: TRANSACTION_BY_ID,
+      payload: response.data,
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+    // return null;
+  }
+};
+
+export const Get_Transaction_Outlet = async (dispatch, invoiceno) => {
+  try {
+    const response = await axios.get(
+      `${apiUrl}/outlet-transactions/${invoiceno}`
+    );
+    dispatch({
+      type: OUTLET_TRANSACTION_BY_ID,
       payload: response.data,
     });
     return response.data;

@@ -5,12 +5,13 @@ import { MdOutlineDoubleArrow } from "react-icons/md";
 import {
   Get_Innofashion_Search_By_Date,
   InnofashionRequest,
+  OutletTransactionSubmit,
   TransactionSubmit,
-} from "../../Api/Innofashion/Invoice";
+} from "../../../Api/Innofashion/Invoice";
 import { useDispatch, useSelector } from "react-redux";
 import { ConfigProvider, Select } from "antd";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
-// import "../../App.css";
+
 const validationSchema = Yup.object().shape({
   invoice_no: Yup.string()
     .required("Invoice No is required")
@@ -32,7 +33,7 @@ const validationSchema = Yup.object().shape({
     .typeError("Must be a number")
     .required("Transaction ID is required"),
 });
-export default function Transaction({
+export default function OutletTransaction({
   setShowStatus,
   invoiceno,
   page,
@@ -42,15 +43,11 @@ export default function Transaction({
 }) {
   const dispatch = useDispatch();
   const inno = useSelector((state) => state.akr.inno_date);
-  const Get_Voi_bank_list = useSelector((state) => state.akr.voi_account_list);
-  const Get_Inno_bank_list = useSelector(
-    (state) => state.akr.inno_account_list
-  );
 
   const handleSubmit = async (value) => {
     console.log("hi");
     try {
-      const data = await TransactionSubmit(
+      const data = await OutletTransactionSubmit(
         value,
         dispatch,
         invoiceno,
@@ -74,16 +71,15 @@ export default function Transaction({
       console.error("Error uploading data", error);
     }
   };
-  console.log(inno, "9874565currentdata5inno");
+  console.log(currentdata, "9874565currentdata5inno");
   useEffect(() => {
     Get_Innofashion_Search_By_Date(dispatch, invoiceno);
   }, []);
-  console.log(Get_Voi_bank_list, "Get_Voi_bank_listGet_Voi_bank_list");
+    const Get_Inno_bank_list = useSelector(
+      (state) => state.akr.inno_account_list
+    );
+  
   const InnoformattedData = Get_Inno_bank_list.map((item) => ({
-    value: `${item.acc_holder_name}-${item.acc_no}`,
-    label: `${item.acc_holder_name}-${item.acc_no}`,
-  }));
-  const VoiformattedData = Get_Voi_bank_list.map((item) => ({
     value: `${item.acc_holder_name}-${item.acc_no}`,
     label: `${item.acc_holder_name}-${item.acc_no}`,
   }));
@@ -100,14 +96,9 @@ export default function Transaction({
           transaction_date: new Date().toISOString().split("T")[0],
           from_bank: "",
           to_bank: "",
-          transaction_amt:
-            page === "invoice"
-              ? currentTab === 2
-                ? currentdata.net_amount
-                : currentdata.balance_amount
-              : currentdata
-              ? currentdata.advance_amount
-              : "",
+          transaction_amt: currentdata
+            ? Math.round(currentdata.net_amount)
+            : "",
           transaction_id: "",
         }}
         validationSchema={validationSchema}
@@ -187,12 +178,12 @@ export default function Transaction({
               <div className="grid grid-cols-2 px-[2vw] mb-[2vw] gap-x-[4vw]">
                 <div className="relative">
                   <label className="text-[1vw] font-semibold">
-                    From To Bank
+                    From Bank
                     <span className="text-[1vw] pl-[0.25vw] text-red-500">
                       *
                     </span>
                   </label>
-                  {/* <Field
+                  <Field
                     type="text"
                     name="from_bank"
                     id="from_bank"
@@ -202,55 +193,8 @@ export default function Transaction({
                     onChange={(e) => {
                       handleChange(e);
                     }}
-                    disabled
                     className="border-b-[0.15vw]   border-[#3348FF]  text-[1vw] h-[2.5vw] w-full outline-none  placeholder:text-[1vw] "
-                  /> */}
-                  <ConfigProvider
-                    theme={{
-                      components: {
-                        Select: {
-                          optionActiveBg: "#C0C6FF",
-                          optionSelectedColor: "#FFF",
-                          optionSelectedBg: "#3348FF",
-                          optionHeight: "2",
-                        },
-                      },
-                    }}
-                  >
-                    <Select
-                      showSearch
-                      //   value={values.business}
-                      onChange={(value) => {
-                        handleChange({
-                          target: { name: "from_bank", value },
-                        });
-                      }}
-                      name="from_bank"
-                      placement="bottomRight"
-                      listHeight={250}
-                      dropdownStyle={{
-                        maxHeight: "10vw", // Maximum height of the dropdown
-                        overflowY: "auto", // Enables scrolling for overflow data
-                      }}
-                      className="border-b-[0.15vw] outline-none border-[#3348FF]  text-[1vw] h-[2.5vw] w-full placeholder:text-[1vw] "
-                      placeholder="Select Bank Type"
-                      filterOption={
-                        (input, option) =>
-                          option?.value
-                            ?.toLowerCase()
-                            ?.includes(input.toLowerCase()) // Make it case-insensitive
-                      }
-                      value={values.from_bank || undefined}
-                      optionFilterProp="value"
-                      suffixIcon={
-                        <span style={{ fontSize: "1vw", color: "#3348FF" }}>
-                          <IoMdArrowDropdown size="2vw" />
-                        </span>
-                      }
-                      style={{ padding: 0 }}
-                      options={InnoformattedData}
-                    />
-                  </ConfigProvider>
+                  />
                   <ErrorMessage
                     name="from_bank"
                     component="div"
@@ -287,7 +231,7 @@ export default function Transaction({
               <div className="grid grid-cols-2 px-[2vw] mb-[3vw] gap-x-[4vw]">
                 <div className="relative">
                   <label className="text-[1vw] font-semibold">
-                    To Bank
+                    To Bank Details
                     <span className="text-[1vw] pl-[0.25vw] text-red-500">
                       *
                     </span>
@@ -302,6 +246,7 @@ export default function Transaction({
                     onChange={(e) => {
                       handleChange(e);
                     }}
+                    disabled
                     className="border-b-[0.15vw]   border-[#3348FF]  text-[1vw] h-[2.5vw] w-full outline-none  placeholder:text-[1vw] "
                   /> */}
                   <ConfigProvider
@@ -318,6 +263,7 @@ export default function Transaction({
                   >
                     <Select
                       showSearch
+                      //   value={values.business}
                       onChange={(value) => {
                         handleChange({
                           target: { name: "to_bank", value },
@@ -325,21 +271,18 @@ export default function Transaction({
                       }}
                       name="to_bank"
                       placement="topRight"
-                      listHeight={250} // Sets height of the dropdown list
+                      listHeight={250}
                       dropdownStyle={{
                         maxHeight: "10vw", // Maximum height of the dropdown
                         overflowY: "auto", // Enables scrolling for overflow data
                       }}
-                      className="border-b-[0.15vw] outline-none border-[#3348FF] min-h-auto max-h-[5vw] text-[1vw] h-[2.5vw] w-full placeholder:text-[1vw]"
-                      placeholder={
-                        <span style={{ fontSize: "1vw" }}>
-                          Select To Bank
-                        </span>
-                      } // Ensures placeholder is styled and displayed
-                      filterOption={(input, option) =>
-                        option?.value
-                          ?.toLowerCase()
-                          ?.includes(input.toLowerCase())
+                      className="border-b-[0.15vw] outline-none border-[#3348FF]  text-[1vw] h-[2.5vw] w-full placeholder:text-[1vw] "
+                      placeholder="Select Bank Type"
+                      filterOption={
+                        (input, option) =>
+                          option?.value
+                            ?.toLowerCase()
+                            ?.includes(input.toLowerCase()) // Make it case-insensitive
                       }
                       value={values.to_bank || undefined}
                       optionFilterProp="value"
@@ -349,10 +292,9 @@ export default function Transaction({
                         </span>
                       }
                       style={{ padding: 0 }}
-                      options={VoiformattedData}
+                      options={InnoformattedData}
                     />
                   </ConfigProvider>
-
                   <ErrorMessage
                     name="to_bank"
                     component="div"

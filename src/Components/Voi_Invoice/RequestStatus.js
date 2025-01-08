@@ -85,13 +85,13 @@ export default function RequestStatus({ setShowStatus }) {
         <div className="col-span-2 flex ">
           <div className="flex flex-col gap-y-[0.5vw]">
             <label className="text-[1vw]">Credit Period (Days)</label>
-            <div className="flex gap-x-[1vw]">
-              <Radio.Group onChange={onChange} value={creditValue} className="flex gap-x-[1vw] custom-radio">
+            <div className="flex w-full gap-x-[2vw]">
+              <Radio.Group onChange={onChange} value={creditValue} className="flex gap-x-[2vw] custom-radio">
                 <Radio  value={30}>30</Radio>
                 <Radio value={45}>45</Radio>
                 <Radio value={60}>60</Radio>
                 <Radio value={90}>90</Radio>
-                <Radio value={120}>120</Radio>
+                {/* <Radio value={120}>120</Radio> */}
               </Radio.Group>
             </div>
           </div>
