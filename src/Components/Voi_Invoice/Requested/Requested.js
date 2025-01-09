@@ -131,6 +131,22 @@ export default function RequestedFun() {
         );
       },
     },
+    {
+      title: <span className="text-[0.9vw]">Status Date</span>,
+      key: "invoice_date",
+      align: "center",
+      sorter: (a, b) =>
+        dayjs(a.request_date).valueOf() - dayjs(b.request_date).valueOf(),
+      render: (row) => {
+        return (
+          <>
+            <label className="text-[0.9vw]">
+              {dayjs(row.request_date).format("DD MMM, YYYY")}
+            </label>
+          </>
+        );
+      },
+    },
     // {
     //   title: <span className="text-[0.9vw]">Due Date</span>,
     //   key: "duedate",

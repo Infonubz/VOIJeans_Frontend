@@ -213,12 +213,31 @@ export default function Innofashion_Invoice() {
       align: "center",
       className: currentTab === 2 ? "hidden" : "",
       sorter: (a, b) =>
-        dayjs(a.adv_paid_date).valueOf() - dayjs(b.adv_paid_date).valueOf(),
+        dayjs(
+          currentTab === 3
+            ? a.adv_paid_date
+            : currentTab === 9
+            ? a.closing_date
+            : a.request_date
+        ).valueOf() -
+        dayjs(
+          currentTab === 3
+            ? b.adv_paid_date
+            : currentTab === 9
+            ? b.closing_date
+            : b.request_date
+        ).valueOf(),
       render: (row) => {
         return (
           <>
             <label className="text-[0.9vw]">
-              {dayjs(row.adv_paid_date).format("DD MMM, YYYY")}
+              {dayjs(
+                currentTab === 3
+                  ? row.adv_paid_date
+                  : currentTab === 9
+                  ? row.closing_date
+                  : row.request_date
+              ).format("DD MMM, YYYY")}
             </label>
           </>
         );

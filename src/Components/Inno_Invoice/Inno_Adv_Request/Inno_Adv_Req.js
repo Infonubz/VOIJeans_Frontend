@@ -150,12 +150,12 @@ export default function Inno_Adv_Request() {
       align: "center",
       className: currentTab === 2 ? "hidden" : "",
       sorter: (a, b) =>
-        dayjs(a.adv_paid_date).valueOf() - dayjs(b.adv_paid_date).valueOf(),
+        dayjs(a.request_date).valueOf() - dayjs(b.request_date).valueOf(),
       render: (row) => {
         return (
           <>
             <label className="text-[0.9vw]">
-              {dayjs(row.adv_paid_date).format("DD MMM, YYYY")}
+              {dayjs(row.request_date).format("DD MMM, YYYY")}
             </label>
           </>
         );

@@ -64,6 +64,12 @@ export default function Topbar() {
   const handlesubmit = (noti) => {
     NotificationUpdate(dispatch, true, noti.notification_id);
   };
+  console.log(
+    Get_Notification?.notifications[0]?.notification_date,
+    isoFormattedDate,
+    "testtttttttttt"
+  );
+
   const notificationcontent = (
     <div className="w-full min-h-auto max-h-[20vw] overflow-y-scroll pr-[1vw]">
       {Get_Notification?.notifications?.length > 0 &&
@@ -89,9 +95,10 @@ export default function Topbar() {
                   noti.is_read === true ? "text-gray-400" : ""
                 }`}
               >
-                {noti.created_at === isoFormattedDate
-                  ? dayjs(noti.created_at).format("HH MM")
-                  : dayjs(noti.created_at).format("DD MMM")}
+                {dayjs(noti.notification_date).format("DD MM YYYY") ===
+                dayjs(isoFormattedDate).format("DD MM YYYY")
+                  ? dayjs(noti.notification_date).format("hh:mm a")
+                  : dayjs(noti.notification_date).format("DD MMM ")}
               </div>
             </div>
           </>
